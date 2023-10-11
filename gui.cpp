@@ -36,5 +36,5 @@ void AutoCompleteUI::create_layout(){
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(inputField);
     layout->addWidget(displayLabel);
-    centralWidget->setLayout(layout);  // Set the layout for the centralWidget
+    this->centralWidget->setLayout(layout);  // Set the layout for the centralWidget
 }

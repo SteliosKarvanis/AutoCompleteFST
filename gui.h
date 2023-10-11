@@ -25,8 +25,6 @@ public slots:
 
 private:
     QWidget* centralWidget;
-    QVBoxLayout* layout;
-
     QLineEdit* inputField;
     QLabel* displayLabel;
 
