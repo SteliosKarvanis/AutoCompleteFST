@@ -11,10 +11,10 @@ class FST{
 public:
     FST();
     ~FST() = default;
-    void buildFST(std::string filename);
+    void buildFST(const std::string& filename);
     static Node *get_next_node_with_last_char(Node *node);
     static char get_next_last_char(Node* node);
-    static void check_data(std::string filename);
+    static void check_data(const std::string& filename);
     static bool is_sorted(std::string s1, std::string s2);
     void print_fst();
 

@@ -2,6 +2,9 @@
 
 #include "fst.h"
 #include "gui.h"
+#include <memory>
+
+#define shp std::shared_ptr
 
 // int main(int argc, char* argv[]) {
 //     QApplication app(argc, argv);
@@ -13,7 +16,7 @@
 
 int main(){
     std::string file = "../data/american-english-sorted";
-    FST *fst = new FST();
+    shp<FST> fst = shp<FST>();
     fst->check_data(file);
     std::cout << "Data valid!!!" << std::endl;
     return 0;

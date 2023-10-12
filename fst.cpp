@@ -5,7 +5,7 @@ FST::FST(){
     this->final_frozen_nodes = std::vector<Node*>();
 }
 
-void FST::check_data(std::string filename){
+void FST::check_data(const std::string& filename){
     std::ifstream myfile;
     myfile.open(filename);
 
@@ -21,7 +21,7 @@ void FST::check_data(std::string filename){
     }
 }
 
-void FST::buildFST(std::string filename){
+void FST::buildFST(const std::string& filename){
     std::ifstream myfile;
     std::string word;
     myfile.open(filename);
