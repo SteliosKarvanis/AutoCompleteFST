@@ -12,18 +12,20 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include "fst.h"
 
 
 class AutoCompleteUI : public QMainWindow {
 Q_OBJECT
 
 public:
-    explicit AutoCompleteUI(QWidget* parent = nullptr);
+    explicit AutoCompleteUI(QWidget* parent = nullptr, std::string data_file = "");
     ~AutoCompleteUI() = default;
 public slots:
-    void add_text();
+    void get_predictions();
 
 private:
+    FST* fst;
     QWidget* central_widget;
     QLineEdit* input_field;
     QLabel* display_label;

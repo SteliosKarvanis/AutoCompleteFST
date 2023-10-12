@@ -1,7 +1,7 @@
 // #include <vector>
 // #include <fstream>
 // #include <algorithm>
-// #include <string>
+#include <string>
 
 // bool is_sorted(std::string s1, std::string s2){
 //     int index = 0;
@@ -39,3 +39,22 @@
 //     }
 //     return 0;
 // }
+
+bool is_sorted(std::string s1, std::string s2){
+    int index = 0;
+    while(index < s1.size() && index < s2.size()){
+        int value1 = s1[index];
+        int value2 = s2[index];
+        if(value1 > value2)
+            return false;
+        else if(value1 < value2){
+            return true;
+        }
+        index++;
+    }
+    // Equal so far
+    if(s1.size() > s2.size())
+        return false;
+    else
+        return true;
+}

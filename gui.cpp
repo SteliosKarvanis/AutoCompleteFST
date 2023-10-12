@@ -1,13 +1,14 @@
 #include "gui.h"
 #include <iostream>
 
-AutoCompleteUI::AutoCompleteUI(QWidget* parent) : QMainWindow(parent){
+AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWindow(parent){
     setWindowTitle("AutoComplete");
 
     this->central_widget = nullptr;
     this->display_label = nullptr;
     this->input_field = nullptr;
-
+    this->fst = new FST();
+    this->fst->buildFST(data_file, true);
     this->create_widgets();
     this->create_layout();
     this->create_actions();
@@ -15,13 +16,19 @@ AutoCompleteUI::AutoCompleteUI(QWidget* parent) : QMainWindow(parent){
     setCentralWidget(central_widget);
 }
 
-void AutoCompleteUI::add_text(){
-    QString text = this->input_field->text();
-    this->display_label->setText(text);
+void AutoCompleteUI::get_predictions(){
+    std::string input_text = this->input_field->text().toStdString();
+    auto words = fst->retrieve_words(input_text);
+    std::string output_text;
+    for(auto word:words){
+        output_text = output_text + word;
+        output_text.push_back('\n'); 
+    }
+    this->display_label->setText(QString::fromStdString(output_text));
 }
 
 void AutoCompleteUI::create_actions(){
-    connect(input_field, &QLineEdit::textChanged, this, &AutoCompleteUI::add_text);
+    connect(input_field, &QLineEdit::textChanged, this, &AutoCompleteUI::get_predictions);
 }
 
 void AutoCompleteUI::create_widgets(){
