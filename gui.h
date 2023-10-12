@@ -24,9 +24,9 @@ public slots:
     void add_text();
 
 private:
-    QWidget* centralWidget;
-    QLineEdit* inputField;
-    QLabel* displayLabel;
+    QWidget* central_widget;
+    QLineEdit* input_field;
+    QLabel* display_label;
 
     void create_actions();
     void create_layout();
