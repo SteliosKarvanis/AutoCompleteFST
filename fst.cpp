@@ -149,18 +149,20 @@ void FST::update(Node* branch_node){
     auto suffix = this->get_last_word_suffix(branch_node);
     if(suffix.empty())
         return;
-
+    
+    // Get the frozen node with the biggest suffix
+    Node* actual_frozen_node = final_frozen_node;
     Node* next_node;
-    Node* actual_node = final_frozen_node;
     std::string common_suffix = "";
-    for(int char_idx = suffix.size()-1; char_idx >=0; char_idx--){
+    for(int char_idx = suffix.size()-1; char_idx >= 1; char_idx--){
         next_node = nullptr;
-        for(int i = 0; i < actual_node->previous_nodes.size(); i++){
-            if(!actual_node->previous_nodes[i]->frozen)
+        char curr_desired_char = suffix[char_idx];
+        for(int i = 0; i < actual_frozen_node->previous_nodes.size(); i++){
+            if(!actual_frozen_node->previous_nodes[i]->frozen)
                 continue;
-            if(actual_node->backward_transitions[i]->character == suffix[char_idx]){
-                common_suffix.insert(common_suffix.begin(), suffix[char_idx]);
-                next_node = actual_node->previous_nodes[i];
+            if(actual_frozen_node->backward_transitions[i]->character == curr_desired_char){
+                common_suffix.insert(common_suffix.begin(), curr_desired_char);
+                next_node = actual_frozen_node->previous_nodes[i];
                 break;
             }
         }
@@ -168,23 +170,16 @@ void FST::update(Node* branch_node){
             break;
         if(next_node->valid && !branch_node->valid)
             break;
-        actual_node = next_node;
+        actual_frozen_node = next_node;
     }
     Node* desired_node = branch_node;
     int branch_to_desired_dist = (int)suffix.size() - (int)common_suffix.size() - 1;
-    if(branch_to_desired_dist < 0){
-        for(int i = 0; i < -branch_to_desired_dist; i++){
-            actual_node = actual_node->previous_nodes[actual_node->previous_nodes.size()-1];
-        }
+    for(int i = 0; i < branch_to_desired_dist; i++){
+        desired_node = get_next_node_with_last_char(desired_node);
     }
-    else{
-        for(int i = 0; i < branch_to_desired_dist; i++){
-            desired_node = get_next_node_with_last_char(desired_node);
-        }
-    }
-    desired_node->next_nodes[desired_node->next_nodes.size()-1] = actual_node;
-    actual_node->previous_nodes.push_back(desired_node);
-    actual_node->backward_transitions.push_back(new Transition(suffix[suffix.size()-1]));
+    desired_node->next_nodes[desired_node->next_nodes.size()-1] = actual_frozen_node;
+    actual_frozen_node->previous_nodes.push_back(desired_node);
+    actual_frozen_node->backward_transitions.push_back(desired_node->forward_transitions[desired_node->forward_transitions.size()-1]);
 }
 
 bool FST::check_data(const std::string& filename){
