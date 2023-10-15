@@ -76,7 +76,7 @@ void FST::buildFST(const std::string& filename){
     Node* last_common_node;
     std::ifstream myfile(filename);
     while(std::getline(myfile, word)){
-        last_common_node = get_new_word_max_existent_prefix(word, existent_prefix_size);
+        last_common_node = retrieve_new_word_max_existent_prefix(word, existent_prefix_size);
         this->update(last_common_node);
         this->froze_node_tree(get_last_next_node(last_common_node));
         this->add_suffix(last_common_node, word, existent_prefix_size);
@@ -133,7 +133,7 @@ void FST::add_node(Node* base_node, Transition* transition){
 /// @param new_word: the word that is been added
 /// @param existent_prefix_size: output, the size of the common prefix
 /// @return the node with the max common prefix with the new word
-Node* FST::get_new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size){
+Node* FST::retrieve_new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size){
     Node* actual_node = this->root;
     existent_prefix_size = 0;
     for(char current_char : new_word){

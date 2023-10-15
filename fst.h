@@ -25,7 +25,7 @@ private:
     void update(Node* branch_node);
     static Node* get_last_next_node(Node* node);
     static char get_last_next_char(Node* node);
-    Node* get_new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size);
+    Node* retrieve_new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size);
     // Search utils
     void DFS(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max_num_of_results);
     Node* retrieve_node_with_prefix(const std::string& prefix);
