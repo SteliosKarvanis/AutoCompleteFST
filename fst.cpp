@@ -21,7 +21,6 @@ void FST::buildFST(const std::string& filename, bool should_check_data){
     Node* last_common_node;
     myfile.open(filename);
     while(std::getline(myfile, word)){
-        std::cout << word << std::endl;
         last_common_node = get_new_word_max_common_preffix(word, common_prefix_size);
         this->update(last_common_node);
         this->froze_node_tree(get_next_node_with_last_char(last_common_node));
@@ -136,8 +135,8 @@ std::string FST::get_last_word_suffix(Node* node){
     Node* actual_node = node;
     while(!actual_node->next_nodes.empty()){
         int forward_transitions_size = actual_node->forward_transitions.size();
-        suffix.push_back(actual_node->forward_transitions[forward_transitions_size-1]->character);
-        actual_node = actual_node->next_nodes[forward_transitions_size-1];
+        suffix.push_back(actual_node->forward_transitions[forward_transitions_size - 1]->character);
+        actual_node = actual_node->next_nodes[forward_transitions_size - 1];
     }
     return suffix;
 }
@@ -145,41 +144,43 @@ std::string FST::get_last_word_suffix(Node* node){
 void FST::update(Node* branch_node){
     if(final_frozen_node == nullptr)
         return;
-
-    auto suffix = this->get_last_word_suffix(branch_node);
-    if(suffix.empty())
+    if(branch_node->next_nodes.empty())
         return;
-    
-    // Get the frozen node with the biggest suffix
+    // Get last node
+    Node* last_new_node = branch_node;
+    while(!last_new_node->next_nodes.empty())
+        last_new_node = get_next_node_with_last_char(last_new_node);
+
+    Node* actual_new_node = last_new_node;
     Node* actual_frozen_node = final_frozen_node;
     Node* next_node;
-    std::string common_suffix = "";
-    for(int char_idx = suffix.size()-1; char_idx >= 1; char_idx--){
+    while(actual_new_node != branch_node){
         next_node = nullptr;
-        char curr_desired_char = suffix[char_idx];
+        char curr_desired_char = actual_new_node->backward_transitions[actual_new_node->backward_transitions.size() - 1]->character;
+        Node* next_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
+        if(next_new_node == branch_node)
+            break;
         for(int i = 0; i < actual_frozen_node->previous_nodes.size(); i++){
             if(!actual_frozen_node->previous_nodes[i]->frozen)
                 continue;
+            if(actual_frozen_node->previous_nodes[i]->valid != next_new_node->valid)
+                continue;
             if(actual_frozen_node->backward_transitions[i]->character == curr_desired_char){
-                common_suffix.insert(common_suffix.begin(), curr_desired_char);
                 next_node = actual_frozen_node->previous_nodes[i];
                 break;
             }
         }
         if(next_node == nullptr)
             break;
-        if(next_node->valid && !branch_node->valid)
+        if(next_node->next_nodes.size() > 1 || next_new_node->next_nodes.size() > 1)
             break;
         actual_frozen_node = next_node;
+        actual_new_node = next_new_node;
     }
-    Node* desired_node = branch_node;
-    int branch_to_desired_dist = (int)suffix.size() - (int)common_suffix.size() - 1;
-    for(int i = 0; i < branch_to_desired_dist; i++){
-        desired_node = get_next_node_with_last_char(desired_node);
-    }
-    desired_node->next_nodes[desired_node->next_nodes.size()-1] = actual_frozen_node;
-    actual_frozen_node->previous_nodes.push_back(desired_node);
-    actual_frozen_node->backward_transitions.push_back(desired_node->forward_transitions[desired_node->forward_transitions.size()-1]);
+    actual_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
+    actual_new_node->next_nodes[actual_new_node->next_nodes.size() - 1] = actual_frozen_node;
+    actual_frozen_node->previous_nodes.push_back(actual_new_node);
+    actual_frozen_node->backward_transitions.push_back(actual_new_node->forward_transitions[actual_new_node->forward_transitions.size() - 1]);
 }
 
 bool FST::check_data(const std::string& filename){

@@ -11,10 +11,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-file(GLOB SOURCES "*.cpp")
-file(GLOB HEADERS "*.h")
 
-# Create executable
-add_executable(autocomplete ${SOURCES} ${HEADERS})
+
+# Create executables
+add_executable(autocomplete main.cpp gui.cpp gui.h fst.h fst.cpp data_types.h sort.cpp)
 target_link_libraries(autocomplete Qt5::Widgets)
 
+add_executable(test_autocomplete test.cpp fst.h fst.cpp data_types.h sort.cpp)

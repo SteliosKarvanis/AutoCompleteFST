@@ -5,7 +5,7 @@
 #include <vector>
 
 struct Transition{
-    Transition(char character, int value=-1): character(character), value(value) {};
+    Transition(char character, int value = -1) : character(character), value(value){};
     char character;
     int value;
 };

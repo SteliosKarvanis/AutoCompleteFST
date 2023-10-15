@@ -20,11 +20,13 @@ void AutoCompleteUI::get_predictions(){
     std::string input_text = this->input_field->text().toStdString();
     auto words = fst->retrieve_words(input_text);
     std::string output_text;
-    for(auto word:words){
+    for(auto word : words){
         output_text = output_text + word;
-        output_text.push_back('\n'); 
+        output_text.push_back('\n');
     }
     this->display_label->setText(QString::fromStdString(output_text));
+    this->display_label->adjustSize();
+    this->adjustSize();
 }
 
 void AutoCompleteUI::create_actions(){
@@ -34,6 +36,8 @@ void AutoCompleteUI::create_actions(){
 void AutoCompleteUI::create_widgets(){
     this->central_widget = new QWidget(this);
     this->display_label = new QLabel(central_widget);
+    this->display_label->setAlignment(Qt::AlignTop);
+    this->display_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     this->display_label->setWordWrap(true);
     this->input_field = new QLineEdit(central_widget);
 
