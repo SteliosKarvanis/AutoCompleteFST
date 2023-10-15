@@ -7,14 +7,58 @@ FST::FST(){
     this->final_frozen_node = nullptr;
 }
 
-void FST::buildFST(const std::string& filename, bool should_check_data){
-    if(should_check_data){
-        if(!check_data(filename)){
-            std::cout << "Invalid Data" << std::endl;
-            return;
-        }
-    }
+////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// SEARCH UTILS ///////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 
+std::vector<std::string> FST::retrieve_words(const std::string& word, int max_num_of_results){
+    std::vector<std::string> output_words = std::vector<std::string>();
+    int depth;
+    Node* last_preffix_node = this->get_max_common_prefix(word, depth);
+    if(depth != word.size())
+        return output_words;
+    // Find words
+    DFS(last_preffix_node, word, output_words, max_num_of_results);
+    return output_words;
+}
+
+void FST::DFS(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max){
+    if(output_words.size() == max)
+        return;
+    if(base_node->valid){
+        output_words.push_back(word);
+    }
+    for(int i = 0; i < base_node->next_nodes.size(); i++){
+        Node* next_node = base_node->next_nodes[i];
+        Transition* next_transition = base_node->forward_transitions[i];
+        DFS(next_node, word + next_transition->character, output_words, max);
+    }
+}
+
+Node* FST::get_max_common_prefix(const std::string& word, int& depth){
+    Node* actual_node = this->root;
+    depth = 0;
+    for(char current_char : word){
+        bool found = false;
+        for(int i = 0; i < actual_node->forward_transitions.size(); i++){
+            if(actual_node->forward_transitions[i]->character == current_char){
+                actual_node = actual_node->next_nodes[i];
+                found = true;
+                depth++;
+                break;
+            }
+        }
+        if(!found)
+            break;
+    }
+    return actual_node;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// BUILD UTILS ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+void FST::buildFST(const std::string& filename){
     std::ifstream myfile;
     std::string word;
     int common_prefix_size;
@@ -27,30 +71,6 @@ void FST::buildFST(const std::string& filename, bool should_check_data){
         this->add_suffix(last_common_node, word, common_prefix_size);
     }
     this->update(last_common_node);
-}
-
-std::vector<std::string> FST::retrieve_words(std::string word, int max_num_of_results){
-    std::vector<std::string> output_words = std::vector<std::string>();
-    int depth;
-    Node* last_preffix_node = this->get_max_common_prefix(word, depth);
-    if(depth != word.size())
-        return output_words;
-    // Find words
-    DFS(last_preffix_node, word, output_words, max_num_of_results);
-    return output_words;
-}
-
-void FST::DFS(Node* base_node, std::string word, std::vector<std::string>& output_words, int max){
-    if(output_words.size() == max)
-        return;
-    if(base_node->valid){
-        output_words.push_back(word);
-    }
-    for(int i = 0; i < base_node->next_nodes.size(); i++){
-        Node* next_node = base_node->next_nodes[i];
-        Transition* next_transition = base_node->forward_transitions[i];
-        DFS(next_node, word + next_transition->character, output_words, max);
-    }
 }
 
 void FST::froze_node_tree(Node* node){
@@ -87,7 +107,7 @@ void FST::add_node(Node* base_node, Transition* transition){
     new_node->backward_transitions.push_back(transition);
 }
 
-Node* FST::get_new_word_max_common_preffix(std::string new_word, int& common_prefix_size){
+Node* FST::get_new_word_max_common_preffix(const std::string& new_word, int& common_prefix_size){
     Node* actual_node = this->root;
     common_prefix_size = 0;
     for(char current_char : new_word){
@@ -99,26 +119,7 @@ Node* FST::get_new_word_max_common_preffix(std::string new_word, int& common_pre
     return actual_node;
 }
 
-Node* FST::get_max_common_prefix(const std::string& word, int& depth){
-    Node* actual_node = this->root;
-    depth = 0;
-    for(char current_char : word){
-        bool found = false;
-        for(int i = 0; i < actual_node->forward_transitions.size(); i++){
-            if(actual_node->forward_transitions[i]->character == current_char){
-                actual_node = actual_node->next_nodes[i];
-                found = true;
-                depth++;
-                break;
-            }
-        }
-        if(!found)
-            break;
-    }
-    return actual_node;
-}
-
-void FST::add_suffix(Node* base_node, std::string word, int initial_depth){
+void FST::add_suffix(Node* base_node, const std::string& word, int initial_depth){
     Node* actual_node = base_node;
     for(int curr_index = initial_depth; curr_index < word.size(); curr_index++){
         // if no next edge found, add the node

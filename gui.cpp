@@ -8,7 +8,7 @@ AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWi
     this->display_label = nullptr;
     this->input_field = nullptr;
     this->fst = new FST();
-    this->fst->buildFST(data_file, true);
+    this->fst->buildFST(data_file);
     this->create_widgets();
     this->create_layout();
     this->create_actions();
