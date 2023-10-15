@@ -95,7 +95,7 @@ void FST::froze_node_tree(Node* node){
     // Update the final frozen node
     if(node->valid && node->next_nodes.empty() && this->final_frozen_node == nullptr)
         this->final_frozen_node = node;
-    
+
     // Recursively froze the tree
     for(auto next_node : node->next_nodes){
         if(next_node->frozen)
@@ -200,7 +200,7 @@ void FST::update(Node* branch_node){
             // The previous node must not have branches
             if(previous_node->next_nodes.size() > 1)
                 continue;
-            
+
             if(actual_frozen_node->backward_transitions[i]->character == curr_desired_char){
                 next_node = previous_node;
                 break;

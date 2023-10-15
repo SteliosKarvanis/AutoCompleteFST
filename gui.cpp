@@ -8,6 +8,7 @@ AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWi
     this->display_label = nullptr;
     this->input_field = nullptr;
     this->fst = new FST();
+
     this->fst->buildFST(data_file);
     this->create_widgets();
     this->create_layout();
@@ -47,5 +48,5 @@ void AutoCompleteUI::create_layout(){
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(input_field);
     layout->addWidget(display_label);
-    this->central_widget->setLayout(layout);  // Set the layout for the central_widget
+    this->central_widget->setLayout(layout);
 }

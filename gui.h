@@ -21,6 +21,7 @@ Q_OBJECT
 public:
     explicit AutoCompleteUI(QWidget* parent = nullptr, std::string data_file = "");
     ~AutoCompleteUI() = default;
+
 public slots:
     void get_predictions();
 
