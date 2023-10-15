@@ -11,19 +11,28 @@ FST::FST(){
 /////////////////////////////////// SEARCH UTILS ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<std::string> FST::retrieve_words(const std::string& word, int max_num_of_results){
+/// @brief Get the words that have the given word as a prefix
+/// @param prefix: The prefix to search for
+/// @param max_num_of_results: The maximum number of results to return (To avoid returning too many results for small prefixes)
+/// @return a vector of strings that are the words that have the given word as a prefix
+std::vector<std::string> FST::retrieve_words(const std::string& prefix, int max_num_of_results){
     std::vector<std::string> output_words = std::vector<std::string>();
-    int depth;
-    Node* last_preffix_node = this->get_max_common_prefix(word, depth);
-    if(depth != word.size())
+    Node* last_preffix_node = this->retrieve_node_with_prefix(prefix);
+    // if the prefix is not completely found, return empty vector
+    if(last_preffix_node == nullptr)
         return output_words;
     // Find words
-    DFS(last_preffix_node, word, output_words, max_num_of_results);
+    DFS(last_preffix_node, prefix, output_words, max_num_of_results);
     return output_words;
 }
 
-void FST::DFS(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max){
-    if(output_words.size() == max)
+/// @brief Run a DFS on the FST to find all the words that have the given word as a prefix
+/// @param base_node: the node to start from, should be the node that has the given word as a prefix
+/// @param word: the current word build so far, from the root
+/// @param output_words: the output, the words that have the given word as a prefix 
+/// @param max_num_of_results: the maximum number of results to return (To avoid returning too many results for small prefixes)
+void FST::DFS(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max_num_of_results){
+    if(output_words.size() == max_num_of_results)
         return;
     if(base_node->valid){
         output_words.push_back(word);
@@ -31,25 +40,26 @@ void FST::DFS(Node* base_node, const std::string& word, std::vector<std::string>
     for(int i = 0; i < base_node->next_nodes.size(); i++){
         Node* next_node = base_node->next_nodes[i];
         Transition* next_transition = base_node->forward_transitions[i];
-        DFS(next_node, word + next_transition->character, output_words, max);
+        DFS(next_node, word + next_transition->character, output_words, max_num_of_results);
     }
 }
 
-Node* FST::get_max_common_prefix(const std::string& word, int& depth){
+/// @brief Retrieve the node that gives the requested prefix
+/// @param prefix: the prefix to search for
+/// @return the node that gives the requested prefix or nullptr if no node found
+Node* FST::retrieve_node_with_prefix(const std::string& prefix){
     Node* actual_node = this->root;
-    depth = 0;
-    for(char current_char : word){
+    for(char current_char : prefix){
         bool found = false;
         for(int i = 0; i < actual_node->forward_transitions.size(); i++){
             if(actual_node->forward_transitions[i]->character == current_char){
                 actual_node = actual_node->next_nodes[i];
                 found = true;
-                depth++;
                 break;
             }
         }
         if(!found)
-            break;
+            return nullptr;
     }
     return actual_node;
 }
