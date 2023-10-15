@@ -13,7 +13,7 @@ public:
     ~FST() = default;
     void buildFST(const std::string& filename, bool should_check_data = false);
     static bool check_data(const std::string& filename);
-    std::vector<std::string> retrieve_words(std::string word, int max = 20);
+    std::vector<std::string> retrieve_words(std::string word, int max_num_of_results = 20);
 
 private:
     Node* root;
@@ -27,7 +27,7 @@ private:
     static char get_next_last_char(Node* node);
     Node* get_new_word_max_common_preffix(std::string new_word, int& common_prefix_size);
     // Search utils
-    void DFS(Node* base_node, std::string word, std::vector<std::string>& output_words, int max);
+    void DFS(Node* base_node, std::string word, std::vector<std::string>& output_words, int max_num_of_results);
     Node* get_max_common_prefix(const std::string& word, int& depth);
     std::string get_last_word_suffix(Node* node);
 

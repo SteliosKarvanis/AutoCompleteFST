@@ -1,7 +1,9 @@
 #include "fst.h"
-#include <memory>
+#include <limits>
 
-void write_to_file(std::vector<std::string> strings){
+#define INF std::numeric_limits<int>::max()
+
+void write_vector_to_file(const std::vector<std::string>& strings){
     std::string file_path = "output.txt";
 
     std::ofstream outfile(file_path);
@@ -19,8 +21,8 @@ int main(int argc, char* argv[]){
     if(!fst->check_data(file))
         std::cout << "Data not sorted!!" << std::endl;
     fst->buildFST(file);
-    std::vector<std::string> words = fst->retrieve_words(text);
-    write_to_file(words);
+    auto words = fst->retrieve_words(text, INF);
+    write_vector_to_file(words);
 
     return 0;
 }

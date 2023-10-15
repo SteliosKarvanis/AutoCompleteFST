@@ -29,14 +29,14 @@ void FST::buildFST(const std::string& filename, bool should_check_data){
     this->update(last_common_node);
 }
 
-std::vector<std::string> FST::retrieve_words(std::string word, int max){
+std::vector<std::string> FST::retrieve_words(std::string word, int max_num_of_results){
     std::vector<std::string> output_words = std::vector<std::string>();
     int depth;
     Node* last_preffix_node = this->get_max_common_prefix(word, depth);
     if(depth != word.size())
         return output_words;
     // Find words
-    DFS(last_preffix_node, word, output_words, max);
+    DFS(last_preffix_node, word, output_words, max_num_of_results);
     return output_words;
 }
 
