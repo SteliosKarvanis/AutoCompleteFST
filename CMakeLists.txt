@@ -18,3 +18,4 @@ add_executable(autocomplete main.cpp gui.cpp gui.h fst.h fst.cpp data_types.h so
 target_link_libraries(autocomplete Qt5::Widgets)
 
 add_executable(test_autocomplete test.cpp fst.h fst.cpp data_types.h sort.cpp)
+add_executable(test_levestein main_levestein.cpp fst.h fst.cpp data_types.h sort.cpp)

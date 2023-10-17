@@ -64,32 +64,47 @@ Node* FST::retrieve_node_with_prefix(const std::string& prefix){
     return actual_node;
 }
 
-// std::vector<std::string> FST::levestein(const std::string& word, int dist){
-//     std::vector<std::string> output_words = std::vector<std::string>();
-//     this->levestein_dfs(output_words, this->root, word, "", dist, 0, 0);
-//     return output_words;
-// }   
+std::vector<std::string> FST::levestein(const std::string& word, int dist){
+    std::vector<std::string> output_words = std::vector<std::string>();
+    this->levestein_dfs(output_words, this->root, word, "", dist, 0, 0);
+    return output_words;
+}
 
-// void FST::levestein_dfs(std::vector<std::string>& output_words, Node* actual_node, const std::string& word, std::string curr_word, const int dist, int curr_dist, int char_idx){
-//     if(curr_dist > dist)
-//         return;
-//     if(actual_node->valid && curr_dist + std::abs((int)word.size() - (int)curr_word.size()) <= dist)
-//         output_words.push_back(curr_word);
-
-//     for(int i = 0; i < actual_node->next_nodes.size(); i++){
-//         auto transition = actual_node->forward_transitions[i];
-//         auto next_node = actual_node->next_nodes[i];
-//         // With transition
-//         int new_dist;
-//         if(char_idx < word.size() && word[char_idx] == transition->character)
-//             new_dist = curr_dist;
-//         else
-//             new_dist = curr_dist + 1;
-//         this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, new_dist, char_idx + 1);
-//         // Without existent transition
-//         this->levestein_dfs(output_words, next_node, word, curr_word, dist, curr_dist + 1, char_idx);
-//     }
-// }
+void FST::levestein_dfs(std::vector<std::string>& output_words, Node* actual_node, const std::string& word, std::string curr_word, const int dist, int curr_dist, int char_idx){
+    if(curr_dist > dist)
+        return;
+    int dist_to_target = (int)word.size() - char_idx;
+    // To may add a word, the node should be valid, and the curr_dist adding the missing suffix size should not exceed the dist
+    if(actual_node->valid && curr_dist + dist_to_target <= dist){
+        bool already_added = false;
+        for(auto output_word : output_words){
+            if(output_word == curr_word){
+                already_added = true;
+                break;
+            }
+        }
+        if(!already_added)
+            output_words.push_back(curr_word);
+    }
+    for(int i = 0; i < actual_node->next_nodes.size(); i++){
+        auto transition = actual_node->forward_transitions[i];
+        auto next_node = actual_node->next_nodes[i];
+        int new_dist_in_addition;
+        // Each follow recursion, cover a different action when modificating the original word
+        if(char_idx < word.size() && word[char_idx] == transition->character){
+            // Match (Follow a transition, making a char match)
+            this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, curr_dist, char_idx + 1);
+        }
+        else{
+            // Replace (Follow a transition, going to the next char to be analised)
+            this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, curr_dist + 1, char_idx + 1);
+            // Addition (Follow a transition, remaining the char to be analised)
+            this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, curr_dist + 1, char_idx);
+            // Deleting (Stay in the state, skipping the current char to be analysed)
+            this->levestein_dfs(output_words, actual_node, word, curr_word, dist, curr_dist + 1, char_idx + 1);
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// BUILD UTILS ////////////////////////////////////////

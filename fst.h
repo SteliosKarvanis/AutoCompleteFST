@@ -13,6 +13,7 @@ public:
     ~FST() = default;
     void buildFST(const std::string& filename);
     static bool check_data(const std::string& filename);
+    std::vector<std::string> levestein(const std::string& word, int dist);
     std::vector<std::string> retrieve_words(const std::string& prefix, int max_num_of_results = 20);
 
 private:
@@ -29,7 +30,7 @@ private:
     // Search utils
     void DFS(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max_num_of_results);
     Node* retrieve_node_with_prefix(const std::string& prefix);
-
+    void levestein_dfs(std::vector<std::string>& output_words, Node* actual_node, const std::string& word, std::string curr_word, const int dist, int curr_dist, int char_idx);
 };
 
 #endif
