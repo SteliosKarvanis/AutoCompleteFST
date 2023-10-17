@@ -1,6 +1,4 @@
 #include "fst.h"
-#include "sort.h"
-
 
 FST::FST(){
     this->root = new Node();

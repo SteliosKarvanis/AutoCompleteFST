@@ -1,7 +1,6 @@
 #ifndef DATA_TYPES_H
 #define DATA_TYPES_H
 
-
 #include <vector>
 
 struct Transition{

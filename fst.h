@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "data_types.h"
+#include "utils.h"
 
 class FST{
 public:

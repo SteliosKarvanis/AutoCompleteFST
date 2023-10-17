@@ -14,8 +14,8 @@ find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 
 # Create executables
-add_executable(autocomplete main.cpp gui.cpp gui.h fst.h fst.cpp data_types.h sort.cpp)
+add_executable(autocomplete main.cpp gui.cpp gui.h fst.h fst.cpp data_types.h utils.cpp utils.h)
 target_link_libraries(autocomplete Qt5::Widgets)
 
-add_executable(test_autocomplete test.cpp fst.h fst.cpp data_types.h sort.cpp)
-add_executable(test_levestein main_levestein.cpp fst.h fst.cpp data_types.h sort.cpp)
+add_executable(test_autocomplete test.cpp fst.h fst.cpp data_types.h utils.cpp utils.h)
+add_executable(test_levestein main_levestein.cpp fst.h fst.cpp data_types.h utils.cpp utils.h)

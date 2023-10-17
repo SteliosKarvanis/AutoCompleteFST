@@ -2,15 +2,9 @@
 #define TEXTADDER_H
 
 #include <QMainWindow>
-#include <QAction>
-#include <QMenu>
 #include <QWidget>
-#include <QMenuBar>
-#include <QPlainTextEdit>
-#include <QtGui>
 #include <QLineEdit>
 #include <QLabel>
-#include <QPushButton>
 #include <QVBoxLayout>
 #include "fst.h"
 
