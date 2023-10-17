@@ -64,6 +64,33 @@ Node* FST::retrieve_node_with_prefix(const std::string& prefix){
     return actual_node;
 }
 
+// std::vector<std::string> FST::levestein(const std::string& word, int dist){
+//     std::vector<std::string> output_words = std::vector<std::string>();
+//     this->levestein_dfs(output_words, this->root, word, "", dist, 0, 0);
+//     return output_words;
+// }   
+
+// void FST::levestein_dfs(std::vector<std::string>& output_words, Node* actual_node, const std::string& word, std::string curr_word, const int dist, int curr_dist, int char_idx){
+//     if(curr_dist > dist)
+//         return;
+//     if(actual_node->valid && curr_dist + std::abs((int)word.size() - (int)curr_word.size()) <= dist)
+//         output_words.push_back(curr_word);
+
+//     for(int i = 0; i < actual_node->next_nodes.size(); i++){
+//         auto transition = actual_node->forward_transitions[i];
+//         auto next_node = actual_node->next_nodes[i];
+//         // With transition
+//         int new_dist;
+//         if(char_idx < word.size() && word[char_idx] == transition->character)
+//             new_dist = curr_dist;
+//         else
+//             new_dist = curr_dist + 1;
+//         this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, new_dist, char_idx + 1);
+//         // Without existent transition
+//         this->levestein_dfs(output_words, next_node, word, curr_word, dist, curr_dist + 1, char_idx);
+//     }
+// }
+
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// BUILD UTILS ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +108,7 @@ void FST::buildFST(const std::string& filename){
         this->froze_node_tree(get_last_next_node(last_common_node));
         this->add_suffix(last_common_node, word, existent_prefix_size);
     }
-    this->update(last_common_node);
+    this->update(this->root);
 }
 
 /// @brief Froze all the node tree from the given node (including the base node)
