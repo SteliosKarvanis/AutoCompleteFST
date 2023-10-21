@@ -20,3 +20,12 @@ target_link_libraries(autocomplete Qt5::Widgets)
 
 add_executable(test_autocomplete test.cpp ${SRCS_NO_GUI})
 add_executable(test_levestein main_levestein.cpp ${SRCS_NO_GUI})
+
+# Package generation
+set(CPACK_PACKAGE_NAME "autocomplete")
+set(CPACK_PACKAGE_CONTACT "Samcbk")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5widgets5, libqt5core5a, libqt5gui5")
+set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/../packages")
+install(TARGETS autocomplete DESTINATION bin)
+install(DIRECTORY data/ DESTINATION data)
+include(CPack)
