@@ -1,6 +1,12 @@
 # AutoCompleteFST
 
-- To build, execute:
+## Requirements
+```
+sudo apt-get install cmake build-essential qtbase5-dev qt5-qmake
+```
+
+## Build
+
 ```
 mkdir build
 cd build
@@ -8,10 +14,20 @@ cmake ..
 make
 ```
 
-- To run, execute:
+## Run
 ```
 cd bin
 ./autocomplete
 ```
 
-- To run tests, use the `test.ipynb` notebook(move it to the `bin` folder first)
+## Test
+ To run tests, use the `test.ipynb` notebook (move it to the `bin` folder first)
+
+## Docker
+```
+docker build -t autocomplete .
+```
+
+```
+docker run --rm -it --name autocomplete -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix autocomplete
+```
