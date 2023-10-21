@@ -11,11 +11,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-
+file(GLOB_RECURSE SRCS src/*.cpp src/*.h)
 
 # Create executables
-add_executable(autocomplete main.cpp gui.cpp gui.h fst.h fst.cpp data_types.h utils.cpp utils.h)
+add_executable(autocomplete main.cpp ${SRCS})
 target_link_libraries(autocomplete Qt5::Widgets)
 
-add_executable(test_autocomplete test.cpp fst.h fst.cpp data_types.h utils.cpp utils.h)
-add_executable(test_levestein main_levestein.cpp fst.h fst.cpp data_types.h utils.cpp utils.h)
+add_executable(test_autocomplete test.cpp src/fst.h src/fst.cpp src/data_types.h src/utils.cpp src/utils.h)
+add_executable(test_levestein main_levestein.cpp src/fst.h src/fst.cpp src/data_types.h src/utils.cpp src/utils.h)

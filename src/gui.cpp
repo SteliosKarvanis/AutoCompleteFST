@@ -1,5 +1,4 @@
 #include "gui.h"
-#include <iostream>
 
 AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWindow(parent){
     setWindowTitle("AutoComplete");

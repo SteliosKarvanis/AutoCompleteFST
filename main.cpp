@@ -1,5 +1,5 @@
 #include <QApplication>
-#include "gui.h"
+#include "src/gui.h"
 
 int main(int argc, char* argv[]){
     std::string data_file = "../data/american-english-sorted";

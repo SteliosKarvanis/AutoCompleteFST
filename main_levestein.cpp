@@ -1,4 +1,4 @@
-#include "fst.h"
+#include "src/fst.h"
 
 int main(int argc, char* argv[]){
     std::string text = argv[1];

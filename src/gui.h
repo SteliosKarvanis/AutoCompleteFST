@@ -6,6 +6,8 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QVBoxLayout>
+
+#include <iostream>
 #include "fst.h"
 
 
