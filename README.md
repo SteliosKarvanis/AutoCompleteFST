@@ -38,3 +38,4 @@ After build, on `build` folder, run:
 cpack
 ```
 And will save the files to `packages` folder
+> Note: if the UI not open, try to run `xhost +` on host machine
