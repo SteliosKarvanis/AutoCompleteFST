@@ -15,6 +15,7 @@ make
 ```
 
 ## Run
+To execute the functionalities with the UI, run:
 ```
 cd bin
 ./autocomplete
