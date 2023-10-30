@@ -24,7 +24,7 @@ private:
     void froze_node_tree(Node* node);
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
     void add_node(Node* base_node, Transition* transition);
-    void update(Node* branch_node);
+    void ingest_last_suffix(Node* branch_node);
     static Node* get_last_next_node(Node* node);
     static char get_last_next_char(Node* node);
     Node* retrieve_new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size);

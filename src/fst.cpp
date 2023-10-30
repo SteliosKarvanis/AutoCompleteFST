@@ -117,11 +117,11 @@ void FST::buildFST(const std::string& filename){
     std::ifstream myfile(filename);
     while(std::getline(myfile, word)){
         last_common_node = retrieve_new_word_max_existent_prefix(word, existent_prefix_size);
-        this->update(last_common_node);
+        this->ingest_last_suffix(last_common_node);
         this->froze_node_tree(get_last_next_node(last_common_node));
         this->add_suffix(last_common_node, word, existent_prefix_size);
     }
-    this->update(this->root);
+    this->ingest_last_suffix(this->root);
 }
 
 /// @brief Froze all the node tree from the given node (including the base node)
@@ -202,7 +202,7 @@ void FST::add_suffix(Node* base_node, const std::string& word, int common_prefix
 
 /// @brief Before add a new word, updates the fst, by joining the new word suffix with a previous frozen word suffix
 /// @param branch_node: the node with the biggest common prefix with the new word that will been added 
-void FST::update(Node* branch_node){
+void FST::ingest_last_suffix(Node* branch_node){
     // Do nothing if there is no frozen node yet 
     // Cases where the word been added is the first word, or the first word with a new suffix
     if(final_frozen_node == nullptr)
