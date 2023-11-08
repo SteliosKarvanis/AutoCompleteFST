@@ -1,5 +1,15 @@
 #include "utils.h"
 
+std::vector<std::string>read_vector_from_file(const std::string& file){
+    std::ifstream myfile(file);
+    std::string word;
+    std::vector<std::string> words;
+    // Build
+    while(std::getline(myfile, word))
+        words.push_back(word);
+    return words;
+}
+
 void write_vector_to_file(const std::vector<std::string>& strings, const std::string& file){
     std::ofstream outfile(file);
     for(const std::string& str : strings){

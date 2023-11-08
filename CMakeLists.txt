@@ -20,6 +20,7 @@ target_link_libraries(autocomplete Qt5::Widgets)
 
 add_executable(test_autocomplete test.cpp ${SRCS_NO_GUI})
 add_executable(test_levestein main_levestein.cpp ${SRCS_NO_GUI})
+add_executable(test_binary_search binary_search.cpp ${SRCS_NO_GUI})
 
 # Package generation
 set(CPACK_PACKAGE_NAME "autocomplete")
