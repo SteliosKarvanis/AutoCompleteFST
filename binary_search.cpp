@@ -37,9 +37,8 @@ int main(int argc, char* argv[]){
     // Read Data 
     auto words = read_vector_from_file(data_file);
     
-    std::string word;
     int min_idx, max_idx;
-    binary_search(word, words, min_idx, max_idx);
+    binary_search(text, words, min_idx, max_idx);
     std::vector<std::string> output_words;
     for(int i = min_idx; i < max_idx; i++){
         output_words.push_back(words[i]);
