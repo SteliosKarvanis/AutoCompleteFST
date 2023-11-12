@@ -23,7 +23,7 @@ cd bin
 ```
 
 ## Test
- To run tests, use the `test.ipynb` notebook (move it to the `bin` folder first)
+ To run tests, use the `test.ipynb` notebook
 
 ## Docker
 ```
