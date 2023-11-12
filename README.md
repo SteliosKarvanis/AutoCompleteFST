@@ -2,7 +2,8 @@
 
 ## Requirements
 ```
-sudo apt-get install cmake build-essential qtbase5-dev qt5-qmake
+sudo apt-get install cmake build-essential qtbase5-dev qt5-qmake python3.9 python3-pip 
+pip install graphviz
 ```
 
 ## Build
@@ -18,7 +19,7 @@ make
 To execute the functionalities with the UI, run:
 ```
 cd bin
-./autocomplete
+./app
 ```
 
 ## Test
@@ -32,7 +33,11 @@ docker build -t autocomplete .
 ```
 docker run --rm -it --name autocomplete -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix autocomplete
 ```
-
+# Plot FST Graph
+To plot the FST graph, run:
+```
+python plot_fst.py ----input_dict_file=<path to your dict>
+```
 # Generating package
 After build, on `build` folder, run:
 ```

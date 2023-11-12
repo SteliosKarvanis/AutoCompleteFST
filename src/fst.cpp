@@ -275,3 +275,63 @@ bool FST::check_data(const std::string& filename){
     }
     return true;
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////// PLOT UTILS /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief write graph to a txt file, write all transitions in the format: "base_node_idx next_node_idx transition_char"
+/// @param filename: the file to write the graph
+void FST::write_graph_to_file(const std::string& filename){
+    std::vector<Node*> nodes_list;
+    get_nodes_list(this->root, nodes_list);
+    std::vector<bool> visited(nodes_list.size(), false);
+    std::string transitions_list_str;
+    get_transitions_list_as_string(this->root, nodes_list, visited, transitions_list_str);
+    std::ofstream output_file(filename);
+    output_file << transitions_list_str;
+    output_file.close();
+}
+
+void FST::get_transitions_list_as_string(Node* base_node, const std::vector<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str){    
+    int base_node_idx = get_node_idx(base_node, nodes_list);
+    visited[base_node_idx] = true;
+    for(int i = 0; i < base_node->next_nodes.size(); i++){
+        Node* next_node = base_node->next_nodes[i];
+        int next_node_idx = get_node_idx(next_node, nodes_list);
+        char transition_char = base_node->forward_transitions[i]->character;
+        std::string transition = std::to_string(base_node_idx) + " " + std::to_string(next_node_idx) + " " + transition_char + "\n";
+        transitions_list_str = transitions_list_str + transition;    
+        if(!visited[next_node_idx])
+            get_transitions_list_as_string(next_node, nodes_list, visited, transitions_list_str);
+    }
+}
+
+int FST::get_node_idx(Node* node, const std::vector<Node*>& nodes_list){
+    int base_node_idx = -1;
+    for(int i = 0; i < nodes_list.size(); i++){
+        if(nodes_list[i] == node){
+            base_node_idx = i;
+            break;
+        }
+    }
+    return base_node_idx;
+}
+
+
+void FST::get_nodes_list(Node* base_node, std::vector<Node*>& output_nodes){
+    bool found_node = false;
+    for(int i = 0; i < output_nodes.size(); i++){
+        if(output_nodes[i] == base_node){
+            found_node = true;
+            break;
+        }
+    }
+    if(!found_node)
+        output_nodes.push_back(base_node);
+
+    for(int i = 0; i < base_node->next_nodes.size(); i++){
+        Node* next_node = base_node->next_nodes[i];
+        get_nodes_list(next_node, output_nodes);
+    }
+}

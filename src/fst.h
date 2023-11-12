@@ -16,6 +16,7 @@ public:
     static bool check_data(const std::string& filename);
     std::vector<std::string> levestein(const std::string& word, int dist);
     std::vector<std::string> retrieve_words(const std::string& prefix, int max_num_of_results = 20);
+    void write_graph_to_file(const std::string& filename);
 
 private:
     Node* root;
@@ -32,6 +33,10 @@ private:
     void DFS(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max_num_of_results);
     Node* retrieve_node_with_prefix(const std::string& prefix);
     void levestein_dfs(std::vector<std::string>& output_words, Node* actual_node, const std::string& word, std::string curr_word, const int dist, int curr_dist, int char_idx);
+    // Plot FST utils
+    void get_nodes_list(Node* base_node, std::vector<Node*>& output_nodes);
+    int get_node_idx(Node* node, const std::vector<Node*>& nodes_list);
+    void get_transitions_list_as_string(Node* base_node, const std::vector<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
 };
 
 #endif
