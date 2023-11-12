@@ -33,6 +33,7 @@ docker build -t autocomplete .
 ```
 docker run --rm -it --name autocomplete -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix autocomplete
 ```
+> Note: if the UI not open, try to run `xhost +` on host machine
 # Plot FST Graph
 To plot the FST graph, run:
 ```
@@ -44,4 +45,3 @@ After build, on `build` folder, run:
 cpack
 ```
 And will save the files to `packages` folder
-> Note: if the UI not open, try to run `xhost +` on host machine
