@@ -11,6 +11,15 @@ int FST::count_nodes(){
     return nodes_list.size();
 }
 
+int FST::memory_usage(){
+    std::vector<Node*> nodes_list;
+    get_nodes_list(this->root, nodes_list);
+    int total_memory = 0;
+    for(auto node: nodes_list)
+        total_memory += sizeof(*node);
+    return total_memory;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////// SEARCH UTILS ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
@@ -43,8 +52,7 @@ void FST::DFS(Node* base_node, const std::string& word, std::vector<std::string>
     }
     for(int i = 0; i < base_node->next_nodes.size(); i++){
         Node* next_node = base_node->next_nodes[i];
-        Transition* next_transition = base_node->forward_transitions[i];
-        DFS(next_node, word + next_transition->character, output_words, max_num_of_results);
+        DFS(next_node, word + base_node->forward_transitions[i], output_words, max_num_of_results);
     }
 }
 
@@ -56,7 +64,7 @@ Node* FST::retrieve_node_with_prefix(const std::string& prefix){
     for(char current_char : prefix){
         bool found = false;
         for(int i = 0; i < actual_node->forward_transitions.size(); i++){
-            if(actual_node->forward_transitions[i]->character == current_char){
+            if(actual_node->forward_transitions[i] == current_char){
                 actual_node = actual_node->next_nodes[i];
                 found = true;
                 break;
@@ -91,19 +99,19 @@ void FST::levestein_dfs(std::vector<std::string>& output_words, Node* actual_nod
             output_words.push_back(curr_word);
     }
     for(int i = 0; i < actual_node->next_nodes.size(); i++){
-        auto transition = actual_node->forward_transitions[i];
+        char transition = actual_node->forward_transitions[i];
         auto next_node = actual_node->next_nodes[i];
         int new_dist_in_addition;
         // Each follow recursion, cover a different action when modificating the original word
-        if(char_idx < word.size() && word[char_idx] == transition->character){
+        if(char_idx < word.size() && word[char_idx] == transition){
             // Match (Follow a transition, making a char match)
-            this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, curr_dist, char_idx + 1);
+            this->levestein_dfs(output_words, next_node, word, curr_word + transition, dist, curr_dist, char_idx + 1);
         }
         else{
             // Replace (Follow a transition, going to the next char to be analised)
-            this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, curr_dist + 1, char_idx + 1);
+            this->levestein_dfs(output_words, next_node, word, curr_word + transition, dist, curr_dist + 1, char_idx + 1);
             // Addition (Follow a transition, remaining the char to be analised)
-            this->levestein_dfs(output_words, next_node, word, curr_word + transition->character, dist, curr_dist + 1, char_idx);
+            this->levestein_dfs(output_words, next_node, word, curr_word + transition, dist, curr_dist + 1, char_idx);
             // Deleting (Stay in the state, skipping the current char to be analysed)
             this->levestein_dfs(output_words, actual_node, word, curr_word, dist, curr_dist + 1, char_idx + 1);
         }
@@ -159,13 +167,13 @@ Node* FST::get_last_next_node(Node* node){
 
 /// @brief Get the char related to the last transition from the given node (usefull in FST build)
 char FST::get_last_next_char(Node* node){
-    return node->forward_transitions[node->forward_transitions.size() - 1]->character;
+    return node->forward_transitions[node->forward_transitions.size() - 1];
 }
 
 /// @brief Add a new node to the fst, building all the transaction related
 /// @param base_node: the parent node to the new node
 /// @param transition: the transition to the new node
-void FST::add_node(Node* base_node, Transition* transition){
+void FST::add_node(Node* base_node, char transition){
     Node* new_node = new Node();
 
     base_node->next_nodes.push_back(new_node);
@@ -198,9 +206,7 @@ Node* FST::retrieve_new_word_max_existent_prefix(const std::string& new_word, in
 void FST::add_suffix(Node* base_node, const std::string& word, int common_prefix_size){
     Node* actual_node = base_node;
     for(int curr_index = common_prefix_size; curr_index < word.size(); curr_index++){
-        char current_char = word[curr_index];
-        Transition* transition = new Transition(current_char);
-        this->add_node(actual_node, transition);
+        this->add_node(actual_node, word[curr_index]);
         actual_node = get_last_next_node(actual_node);
     }
     actual_node->valid = true;
@@ -230,7 +236,7 @@ void FST::ingest_last_suffix(Node* branch_node){
     // In each iteration, compares if actual_new_node and actual_frozen_node are equal and if both are valid for a new transition
     while(actual_new_node != branch_node){
         next_node = nullptr;
-        char curr_desired_char = actual_new_node->backward_transitions[actual_new_node->backward_transitions.size() - 1]->character;
+        char curr_desired_char = actual_new_node->backward_transitions[actual_new_node->backward_transitions.size() - 1];
         Node* next_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
         // The branch node is not part of the suffix that was added and the next node must not have branches
         if(next_new_node == branch_node || next_new_node->next_nodes.size() > 1)
@@ -247,7 +253,7 @@ void FST::ingest_last_suffix(Node* branch_node){
             if(previous_node->next_nodes.size() > 1)
                 continue;
 
-            if(actual_frozen_node->backward_transitions[i]->character == curr_desired_char){
+            if(actual_frozen_node->backward_transitions[i] == curr_desired_char){
                 next_node = previous_node;
                 break;
             }
@@ -305,8 +311,7 @@ void FST::get_transitions_list_as_string(Node* base_node, const std::vector<Node
     for(int i = 0; i < base_node->next_nodes.size(); i++){
         Node* next_node = base_node->next_nodes[i];
         int next_node_idx = get_node_idx(next_node, nodes_list);
-        char transition_char = base_node->forward_transitions[i]->character;
-        std::string transition = std::to_string(base_node_idx) + " " + std::to_string(next_node_idx) + " " + transition_char + " " + std::to_string(base_node->valid) + " " + std::to_string(next_node->valid) + "\n";
+        std::string transition = std::to_string(base_node_idx) + " " + std::to_string(next_node_idx) + " " + base_node->forward_transitions[i] + " " + std::to_string(base_node->valid) + " " + std::to_string(next_node->valid) + "\n";
         transitions_list_str = transitions_list_str + transition;
         if(!visited[next_node_idx])
             get_transitions_list_as_string(next_node, nodes_list, visited, transitions_list_str);
