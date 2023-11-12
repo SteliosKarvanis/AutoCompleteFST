@@ -13,7 +13,7 @@ FST::FST(){
 /// @param prefix: The prefix to search for
 /// @param max_num_of_results: The maximum number of results to return (To avoid returning too many results for small prefixes)
 /// @return a vector of strings that are the words that have the given word as a prefix
-std::vector<std::string> FST::retrieve_words(const std::string& prefix, int max_num_of_results){
+std::vector<std::string> FST::autocomplete(const std::string& prefix, int max_num_of_results){
     std::vector<std::string> output_words = std::vector<std::string>();
     Node* last_preffix_node = this->retrieve_node_with_prefix(prefix);
     // if the prefix is not completely found, return empty vector

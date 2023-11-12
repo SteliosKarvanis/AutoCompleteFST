@@ -64,7 +64,7 @@ void AutoCompleteUI::change_levenstein_distance(){
 
 std::vector<std::string> AutoCompleteUI::result_factory(const std::string& word){
     if(this->current_mode == MODE::AUTOCOMPLETE)
-        return this->fst->retrieve_words(word);
+        return this->fst->autocomplete(word);
     else
         return this->fst->levestein(word, this->levenstein_distance);
 }

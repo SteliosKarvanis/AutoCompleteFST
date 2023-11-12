@@ -10,7 +10,7 @@ int main(int argc, char* argv[]){
     if(!fst->check_data(file))
         std::cout << "Data not sorted!!" << std::endl;
     fst->buildFST(file);
-    auto words = fst->retrieve_words(text, INF);
+    auto words = fst->autocomplete(text, INF);
     write_vector_to_file(words, "../bin/output_autocomplete.txt");
 
     return 0;
