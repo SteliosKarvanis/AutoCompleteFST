@@ -1,5 +1,5 @@
-project(FST)
 cmake_minimum_required(VERSION 3.15)
+project(FST)
 
 set(CMAKE_CXX_STANDARD 17)
 # Move bin to bin folder
