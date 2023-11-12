@@ -1,7 +1,7 @@
 #include "gui.h"
 
-std::string MODE_TO_STRING(MODE MODE) {
-    switch (MODE) {
+std::string MODE_TO_STRING(MODE MODE){
+    switch(MODE){
         case MODE::AUTOCOMPLETE:
             return "AUTOCOMPLETE";
         case MODE::LEVENSHTEIN:
@@ -79,11 +79,11 @@ void AutoCompleteUI::create_widgets(){
     this->central_widget = new QWidget(this);
     this->display_label = new QLabel(central_widget);
     this->input_field = new QLineEdit(central_widget);
-    
+
     this->display_label->setAlignment(Qt::AlignTop);
     this->display_label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     this->display_label->setWordWrap(true);
-    
+
     this->mode_box = new QComboBox(central_widget);
     for(int i = 0; i < static_cast<int>(MODE::MODE_COUNT); i++){
         this->mode_box->addItem(QString::fromStdString(MODE_TO_STRING(static_cast<MODE>(i))));

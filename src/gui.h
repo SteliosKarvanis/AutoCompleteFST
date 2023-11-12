@@ -13,7 +13,7 @@
 #include <iostream>
 #include "fst.h"
 
-enum class MODE {
+enum class MODE{
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
     /////////// Update MODE_TO_STRING, when changing this enum ////////////
@@ -26,8 +26,8 @@ enum class MODE {
 
 std::string MODE_TO_STRING(MODE MODE);
 
-class AutoCompleteUI : public QMainWindow {
-Q_OBJECT
+class AutoCompleteUI : public QMainWindow{
+    Q_OBJECT
 
 public:
     explicit AutoCompleteUI(QWidget* parent = nullptr, std::string data_file = "");

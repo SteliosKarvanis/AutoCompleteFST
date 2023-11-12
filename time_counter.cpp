@@ -24,13 +24,13 @@ int main(int argc, char* argv[]){
         auto words_fst = fst->autocomplete(example, INF);
         auto end_time_fst = std::chrono::high_resolution_clock::now();
         auto duration_fst = std::chrono::duration_cast<std::chrono::microseconds>(end_time_fst - start_time_fst);
-        
+
         // Bin Search
         auto start_time_bin_search = std::chrono::high_resolution_clock::now();
         auto words_bin_search = binary_search(example, words_list);
         auto end_time_bin_search = std::chrono::high_resolution_clock::now();
         auto duration_bin_search = std::chrono::duration_cast<std::chrono::microseconds>(end_time_bin_search - start_time_bin_search);
-        
+
         // Write to file
         out_file << example << " " << std::to_string(duration_fst.count()) << " " << std::to_string(duration_bin_search.count()) << "\n";
     }

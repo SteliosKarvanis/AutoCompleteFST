@@ -4,9 +4,8 @@
 #include <vector>
 
 struct Transition{
-    Transition(char character, int value = -1) : character(character), value(value){};
+    Transition(char character) : character(character){};
     char character;
-    int value;
 };
 
 struct Node{
