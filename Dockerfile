@@ -12,8 +12,8 @@ COPY . /
 
 # Build
 WORKDIR /build
-RUN cmake .. && make autocomplete
+RUN cmake .. && make app
 
 WORKDIR /
 
-CMD ["./bin/autocomplete"]
+CMD ["./bin/app"]
