@@ -300,7 +300,7 @@ void FST::get_transitions_list_as_string(Node* base_node, const std::vector<Node
         Node* next_node = base_node->next_nodes[i];
         int next_node_idx = get_node_idx(next_node, nodes_list);
         char transition_char = base_node->forward_transitions[i]->character;
-        std::string transition = std::to_string(base_node_idx) + " " + std::to_string(next_node_idx) + " " + transition_char + "\n";
+        std::string transition = std::to_string(base_node_idx) + " " + std::to_string(next_node_idx) + " " + transition_char + " " + std::to_string(base_node->valid) + " " + std::to_string(next_node->valid) + "\n";
         transitions_list_str = transitions_list_str + transition;    
         if(!visited[next_node_idx])
             get_transitions_list_as_string(next_node, nodes_list, visited, transitions_list_str);

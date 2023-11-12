@@ -6,7 +6,10 @@ from graphviz import Digraph
 BIN_FOLDER = "bin"
 CPP_BIN = './write_fst'
 OUTPUT_TXT_FILE = "graph.txt"
-
+VALID_TO_FILLED = {
+    "0": None,
+    "1": "filled",
+}
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_dict_file", help="File with FST dictionary", type=str, required=True)
@@ -27,9 +30,9 @@ with open(OUTPUT_TXT_FILE, "r") as f:
         line = line.strip()
         if line:
             elems = [x for x in line.split() if x]
-            start_node, end_node, transition = elems
-            graph.node(start_node, start_node)
-            graph.node(end_node, end_node)
+            start_node, end_node, transition, base_node_valid, next_node_valid = elems
+            graph.node(start_node, start_node, style=VALID_TO_FILLED[base_node_valid])
+            graph.node(end_node, end_node, style=VALID_TO_FILLED[next_node_valid])
             graph.edge(start_node, end_node, label=transition)
 
 # Generate graph visualization
