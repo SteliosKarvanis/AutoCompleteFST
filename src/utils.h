@@ -15,7 +15,7 @@ std::vector<std::string>read_vector_from_file(const std::string& file);
 //////////////////////////////////////////////////////
 ///////////////// Binary Search //////////////////////
 //////////////////////////////////////////////////////
+std::vector<std::string> binary_search(const std::string& prefix, const std::vector<std::string>& words_list);
 int get_smaller_common_prefix_word_index(const std::string& word, const std::vector<std::string>& words_list, int left_idx, int right_idx);
-void binary_search(const std::string& prefix, const std::vector<std::string>& words_list, int& out_min_idx, int& out_max_idx);
 
 #endif
