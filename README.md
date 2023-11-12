@@ -36,7 +36,7 @@ docker run --rm -it --name autocomplete -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/t
 # Plot FST Graph
 To plot the FST graph, run:
 ```
-python plot_fst.py ----input_dict_file=<path to your dict>
+python plot_fst.py --input_dict_file=<path to your dict>
 ```
 # Generating package
 After build, on `build` folder, run:
