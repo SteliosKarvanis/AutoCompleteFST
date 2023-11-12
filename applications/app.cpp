@@ -1,5 +1,5 @@
 #include <QApplication>
-#include "src/gui.h"
+#include "../src/gui.h"
 
 // Main application, a GUI that allows the user to do autocomplete and levestein interatively
 // Usage: ./app

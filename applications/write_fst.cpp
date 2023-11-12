@@ -1,4 +1,4 @@
-#include "src/fst.h"
+#include "../src/fst.h"
 
 // Write FST, takes a file and writes the FST to a file
 // Usage: ./write_fst <input_dict_file> <output_file>

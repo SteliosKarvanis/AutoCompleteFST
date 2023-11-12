@@ -1,4 +1,4 @@
-#include "src/fst.h"
+#include "../src/fst.h"
 
 // Levestein, takes a prefix and returns all words that are at most dist away from the prefix
 // Usage: ./levestein <prefix> <dist>

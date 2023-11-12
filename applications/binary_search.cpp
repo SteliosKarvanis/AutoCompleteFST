@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/utils.h"
+#include "../src/utils.h"
 
 // Binary Search, takes a prefix and returns all words that start with that prefix
 // Usage: ./binary_search <prefix>

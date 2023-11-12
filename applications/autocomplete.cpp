@@ -1,5 +1,5 @@
-#include "src/fst.h"
 #include <limits>
+#include "../src/fst.h"
 
 #define INF std::numeric_limits<int>::max()
 

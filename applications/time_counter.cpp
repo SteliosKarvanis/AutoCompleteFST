@@ -1,8 +1,7 @@
-#include "src/fst.h"
-#include "src/utils.h"
 #include <fstream>
 #include <chrono>
 #include <limits>
+#include "../src/fst.h"
 
 #define INF std::numeric_limits<int>::max()
 
