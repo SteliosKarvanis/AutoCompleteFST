@@ -39,6 +39,7 @@ private:
     void get_nodes_list(Node* base_node, std::vector<Node*>& output_nodes);
     int get_node_idx(Node* node, const std::vector<Node*>& nodes_list);
     void get_transitions_list_as_string(Node* base_node, const std::vector<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
+    char get_previous_node_transition_by_idx(Node* actual_node, int idx);
 };
 
 #endif

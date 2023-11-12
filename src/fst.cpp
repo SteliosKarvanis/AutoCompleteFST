@@ -15,7 +15,7 @@ int FST::memory_usage(){
     std::vector<Node*> nodes_list;
     get_nodes_list(this->root, nodes_list);
     int total_memory = 0;
-    for(auto node: nodes_list)
+    for(auto node : nodes_list)
         total_memory += sizeof(*node);
     return total_memory;
 }
@@ -180,7 +180,6 @@ void FST::add_node(Node* base_node, char transition){
     base_node->forward_transitions.push_back(transition);
 
     new_node->previous_nodes.push_back(base_node);
-    new_node->backward_transitions.push_back(transition);
 }
 
 /// @brief Get the node with the max common prefix with the new word
@@ -236,7 +235,7 @@ void FST::ingest_last_suffix(Node* branch_node){
     // In each iteration, compares if actual_new_node and actual_frozen_node are equal and if both are valid for a new transition
     while(actual_new_node != branch_node){
         next_node = nullptr;
-        char curr_desired_char = actual_new_node->backward_transitions[actual_new_node->backward_transitions.size() - 1];
+        char curr_desired_char = get_previous_node_transition_by_idx(actual_new_node, actual_new_node->previous_nodes.size() - 1);
         Node* next_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
         // The branch node is not part of the suffix that was added and the next node must not have branches
         if(next_new_node == branch_node || next_new_node->next_nodes.size() > 1)
@@ -253,7 +252,7 @@ void FST::ingest_last_suffix(Node* branch_node){
             if(previous_node->next_nodes.size() > 1)
                 continue;
 
-            if(actual_frozen_node->backward_transitions[i] == curr_desired_char){
+            if(get_previous_node_transition_by_idx(actual_frozen_node, i) == curr_desired_char){
                 next_node = previous_node;
                 break;
             }
@@ -269,7 +268,6 @@ void FST::ingest_last_suffix(Node* branch_node){
     actual_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
     actual_new_node->next_nodes[actual_new_node->next_nodes.size() - 1] = actual_frozen_node;
     actual_frozen_node->previous_nodes.push_back(actual_new_node);
-    actual_frozen_node->backward_transitions.push_back(actual_new_node->forward_transitions[actual_new_node->forward_transitions.size() - 1]);
 }
 
 /// @brief Check if the file contains sorted words
@@ -286,6 +284,15 @@ bool FST::check_data(const std::string& filename){
         previous_word = word;
     }
     return true;
+}
+
+char FST::get_previous_node_transition_by_idx(Node* actual_node, int idx){
+    Node* previous_node = actual_node->previous_nodes[idx];
+    for(int i = 0; i < previous_node->forward_transitions.size(); i++){
+        if(previous_node->next_nodes[i] == actual_node)
+            return previous_node->forward_transitions[i];
+    }
+    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
