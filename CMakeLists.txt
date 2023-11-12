@@ -23,6 +23,7 @@ add_executable(levestein applications/levestein.cpp ${SRCS_NO_GUI})
 add_executable(binary_search applications/binary_search.cpp ${SRCS_NO_GUI})
 add_executable(write_fst applications/write_fst.cpp ${SRCS_NO_GUI})
 add_executable(timer applications/time_counter.cpp ${SRCS_NO_GUI})
+add_executable(indexes_analiser applications/index_analysis.cpp ${SRCS_NO_GUI})
 
 # Package generation
 set(CPACK_PACKAGE_NAME "autocomplete")
