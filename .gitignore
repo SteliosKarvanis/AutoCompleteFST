@@ -4,3 +4,5 @@
 /packages
 /output_files
 /tmp
+.idea
+cmake-build-debug

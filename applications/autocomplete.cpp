@@ -7,15 +7,15 @@
 // Usage: ./autocomplete <prefix>
 // Output: Saved on bin/output_autocomplete.txt
 int main(int argc, char* argv[]){
-    if(argc != 2){
-        std::cout << "Usage: ./autocomplete <prefix>\n";
-        return 1;
-    }
-    std::string text = argv[1];
     std::string file = "../data/american-english-sorted";
     FST* fst = new FST();
     fst->buildFST(file);
-    auto words = fst->autocomplete(text, INF);
-    write_vector_to_file(words, "../output_files/output_autocomplete.txt");
+    if(argc == 2){
+        std::string text = argv[1];
+        auto words = fst->autocomplete(text, INF);
+        write_vector_to_file(words, "../output_files/output_autocomplete.txt");
+    }
+    else
+        std::cout << "Usage: ./autocomplete <prefix>\n";
     return 0;
 }
