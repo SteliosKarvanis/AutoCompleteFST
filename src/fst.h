@@ -17,6 +17,7 @@ public:
     std::vector<std::string> levestein(const std::string& word, int dist);
     std::vector<std::string> autocomplete(const std::string& prefix, int max_num_of_results = 20);
     void write_graph_to_file(const std::string& filename);
+    int count_nodes();
 
 private:
     Node* root;
