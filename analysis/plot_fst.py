@@ -6,7 +6,7 @@ from graphviz import Digraph
 """
 Script for visualizing FST graph.
 """
-
+os.chdir("..")
 BIN_FOLDER = "bin"
 CPP_BIN = "./write_fst"
 OUTPUT_DIR = "output_files"
