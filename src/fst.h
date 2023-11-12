@@ -2,6 +2,7 @@
 #define FST_H
 
 #include <string>
+#include <set>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -11,7 +12,7 @@
 class FST{
 public:
     FST();
-    ~FST() = default;
+    ~FST();
     void buildFST(const std::string& filename);
     static bool check_data(const std::string& filename);
     std::vector<std::string> levestein(const std::string& word, int dist);
@@ -36,10 +37,11 @@ private:
     Node* retrieve_node_with_prefix(const std::string& prefix);
     void levestein_dfs(std::vector<std::string>& output_words, Node* actual_node, const std::string& word, std::string curr_word, const int dist, int curr_dist, int char_idx);
     // Plot FST utils
-    void get_nodes_list(Node* base_node, std::vector<Node*>& output_nodes);
-    int get_node_idx(Node* node, const std::vector<Node*>& nodes_list);
-    void get_transitions_list_as_string(Node* base_node, const std::vector<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
+    void get_nodes_list(Node* base_node, std::set<Node*>& output_nodes);
+    int get_node_idx(Node* node, const std::set<Node*>& nodes_list);
+    void get_transitions_list_as_string(Node* base_node, const std::set<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
     char get_previous_node_transition_by_idx(Node* actual_node, int idx);
+    void delete_node_tree(Node* node);
 };
 
 #endif

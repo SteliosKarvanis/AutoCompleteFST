@@ -5,17 +5,21 @@ FST::FST(){
     this->final_frozen_node = nullptr;
 }
 
+FST::~FST(){
+    delete_node_tree(this->root);
+}
+
 int FST::count_nodes(){
-    std::vector<Node*> nodes_list;
+    std::set<Node*> nodes_list;
     get_nodes_list(this->root, nodes_list);
     return nodes_list.size();
 }
 
 int FST::memory_usage(){
-    std::vector<Node*> nodes_list;
+    std::set<Node*> nodes_list;
     get_nodes_list(this->root, nodes_list);
     int total_memory = 0;
-    for(auto node : nodes_list)
+    for(Node* node : nodes_list)
         total_memory += sizeof(*node);
     return total_memory;
 }
@@ -266,8 +270,16 @@ void FST::ingest_last_suffix(Node* branch_node){
 
     // Updates the transitions
     actual_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
+    delete_node_tree(get_last_next_node(actual_new_node));
     actual_new_node->next_nodes[actual_new_node->next_nodes.size() - 1] = actual_frozen_node;
     actual_frozen_node->previous_nodes.push_back(actual_new_node);
+}
+
+void FST::delete_node_tree(Node* node){
+    std::set<Node*> nodes_list;
+    get_nodes_list(node, nodes_list);
+    for(auto curr_node : nodes_list)
+        delete curr_node;
 }
 
 /// @brief Check if the file contains sorted words
@@ -302,7 +314,7 @@ char FST::get_previous_node_transition_by_idx(Node* actual_node, int idx){
 /// @brief write graph to a txt file, write all transitions in the format: "base_node_idx next_node_idx transition_char"
 /// @param filename: the file to write the graph
 void FST::write_graph_to_file(const std::string& filename){
-    std::vector<Node*> nodes_list;
+    std::set<Node*> nodes_list;
     get_nodes_list(this->root, nodes_list);
     std::vector<bool> visited(nodes_list.size(), false);
     std::string transitions_list_str;
@@ -312,7 +324,7 @@ void FST::write_graph_to_file(const std::string& filename){
     output_file.close();
 }
 
-void FST::get_transitions_list_as_string(Node* base_node, const std::vector<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str){
+void FST::get_transitions_list_as_string(Node* base_node, const std::set<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str){
     int base_node_idx = get_node_idx(base_node, nodes_list);
     visited[base_node_idx] = true;
     for(int i = 0; i < base_node->next_nodes.size(); i++){
@@ -325,28 +337,15 @@ void FST::get_transitions_list_as_string(Node* base_node, const std::vector<Node
     }
 }
 
-int FST::get_node_idx(Node* node, const std::vector<Node*>& nodes_list){
-    int base_node_idx = -1;
-    for(int i = 0; i < nodes_list.size(); i++){
-        if(nodes_list[i] == node){
-            base_node_idx = i;
-            break;
-        }
-    }
-    return base_node_idx;
+int FST::get_node_idx(Node* node, const std::set<Node*>& nodes_list){
+    return std::distance(nodes_list.begin(), nodes_list.find(node));
 }
 
 
-void FST::get_nodes_list(Node* base_node, std::vector<Node*>& output_nodes){
-    bool found_node = false;
-    for(int i = 0; i < output_nodes.size(); i++){
-        if(output_nodes[i] == base_node){
-            found_node = true;
-            break;
-        }
-    }
+void FST::get_nodes_list(Node* base_node, std::set<Node*>& output_nodes){
+    bool found_node = (output_nodes.find(base_node) != output_nodes.end());
     if(!found_node)
-        output_nodes.push_back(base_node);
+        output_nodes.insert(base_node);
 
     for(int i = 0; i < base_node->next_nodes.size(); i++){
         Node* next_node = base_node->next_nodes[i];

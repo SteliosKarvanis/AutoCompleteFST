@@ -17,5 +17,6 @@ int main(int argc, char* argv[]){
     }
     else
         std::cout << "Usage: ./autocomplete <prefix>\n";
+    delete fst;
     return 0;
 }
