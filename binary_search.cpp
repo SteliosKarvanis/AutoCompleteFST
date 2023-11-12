@@ -1,6 +1,14 @@
+#include <iostream>
 #include "src/utils.h"
 
+// Binary Search, takes a prefix and returns all words that start with that prefix
+// Usage: ./binary_search <prefix>
+// Ouput: Saved on bin/output_bin_search.txt
 int main(int argc, char* argv[]){
+    if(argc != 2){
+        std::cout << "Usage: ./binary_search <prefix>\n";
+        return 1;
+    }
     std::string data_file = "../data/american-english-sorted";
     std::string text = argv[1];
     // Read Data 

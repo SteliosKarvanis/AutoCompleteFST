@@ -15,7 +15,7 @@ file(GLOB_RECURSE SRCS src/*.cpp src/*.h)
 set (SRCS_NO_GUI src/fst.h src/fst.cpp src/data_types.h src/utils.cpp src/utils.h)
 
 # Create executables
-add_executable(app main.cpp ${SRCS})
+add_executable(app app.cpp ${SRCS})
 target_link_libraries(app Qt5::Widgets)
 
 add_executable(autocomplete autocomplete.cpp ${SRCS_NO_GUI})

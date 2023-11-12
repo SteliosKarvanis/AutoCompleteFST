@@ -3,6 +3,10 @@ import argparse
 import subprocess
 from graphviz import Digraph
 
+"""
+Script for visualizing FST graph.
+"""
+
 BIN_FOLDER = "bin"
 CPP_BIN = "./write_fst"
 OUTPUT_TXT_FILE = "graph.txt"
