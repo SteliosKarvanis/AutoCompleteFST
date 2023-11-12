@@ -25,7 +25,7 @@ args = parser.parse_args()
 input_dict_file = args.input_dict_file
 output_image_file = f"output_graph_{input_dict_file.split('.')[0].split('/')[-1]}"
 # Generate txt file with graph transitions,
-# In format: "start_node_idx, end_node_idx, transition_label"
+# In format: "start_node_idx, end_node_idx, transition_label, start_node_valid, end_node_valid"
 os.chdir(BIN_FOLDER)
 process = subprocess.run(
     [CPP_BIN, f"./../{input_dict_file}", f"./../{OUTPUT_TXT_FILE}"]
