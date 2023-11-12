@@ -2,6 +2,10 @@
 #define DATA_TYPES_H
 
 #include <vector>
+#include <memory>
+
+#define shp std::shared_ptr
+#define mshp std::make_shared
 
 struct Transition{
     Transition(char character) : character(character){};
@@ -11,10 +15,10 @@ struct Transition{
 struct Node{
     bool valid = false;
     bool frozen = false;
-    std::vector<Node*> next_nodes = std::vector<Node*>();
-    std::vector<Node*> previous_nodes = std::vector<Node*>();
-    std::vector<Transition*> forward_transitions = std::vector<Transition*>();
-    std::vector<Transition*> backward_transitions = std::vector<Transition*>();
+    std::vector<shp<Node>> next_nodes = std::vector<shp<Node>>();
+    std::vector<shp<Node>> previous_nodes = std::vector<shp<Node>>();
+    std::vector<shp<Transition>> forward_transitions = std::vector<shp<Transition>>();
+    std::vector<shp<Transition>> backward_transitions = std::vector<shp<Transition>>();
 };
 
 #endif
