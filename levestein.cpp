@@ -2,7 +2,7 @@
 
 // Levestein, takes a prefix and returns all words that are at most dist away from the prefix
 // Usage: ./levestein <prefix> <dist>
-// Ouput: Saved on bin/output_levestein.txt
+// Output: Saved on bin/output_levestein.txt
 int main(int argc, char* argv[]){
     if(argc != 3){
         std::cout << "Usage: ./levestein <prefix> <dist>\n";
@@ -15,6 +15,6 @@ int main(int argc, char* argv[]){
     FST* fst = new FST();
     fst->buildFST(file);
     auto words = fst->levestein(text, dist);
-    write_vector_to_file(words, "../bin/output_levestein.txt");
+    write_vector_to_file(words, "../output_files/output_levestein.txt");
     return 0;
 }

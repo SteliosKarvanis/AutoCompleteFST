@@ -5,7 +5,7 @@
 
 // Autocomplete, takes a prefix and returns all words that start with that prefix
 // Usage: ./autocomplete <prefix>
-// Ouput: Saved on bin/output_autocomplete.txt
+// Output: Saved on bin/output_autocomplete.txt
 int main(int argc, char* argv[]){
     if(argc != 2){
         std::cout << "Usage: ./autocomplete <prefix>\n";
@@ -16,6 +16,6 @@ int main(int argc, char* argv[]){
     FST* fst = new FST();
     fst->buildFST(file);
     auto words = fst->autocomplete(text, INF);
-    write_vector_to_file(words, "../bin/output_autocomplete.txt");
+    write_vector_to_file(words, "../output_files/output_autocomplete.txt");
     return 0;
 }

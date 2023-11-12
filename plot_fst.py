@@ -9,6 +9,7 @@ Script for visualizing FST graph.
 
 BIN_FOLDER = "bin"
 CPP_BIN = "./write_fst"
+OUTPUT_DIR = "output_files"
 OUTPUT_TXT_FILE = "graph.txt"
 VALID_TO_FILLED = {
     "0": None,
@@ -32,7 +33,7 @@ process = subprocess.run(
 os.chdir("..")
 
 # Read graph from txt file
-graph = Digraph(output_image_file, filename=output_image_file, format="png")
+graph = Digraph(output_image_file, filename=f"{OUTPUT_DIR}/{output_image_file}", format="png")
 with open(OUTPUT_TXT_FILE, "r") as f:
     for line in f:
         line = line.strip()
@@ -48,4 +49,4 @@ graph.render(view=True)
 
 # Remove unnecessary files
 os.remove(OUTPUT_TXT_FILE)
-os.remove(output_image_file)
+os.remove(f"{OUTPUT_DIR}/{output_image_file}")

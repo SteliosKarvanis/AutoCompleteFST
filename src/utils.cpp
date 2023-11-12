@@ -11,6 +11,10 @@ std::vector<std::string>read_vector_from_file(const std::string& file){
 }
 
 void write_vector_to_file(const std::vector<std::string>& strings, const std::string& file){
+    int folder_end_idx = file.rfind("/");
+    std::string folder = file.substr(0, folder_end_idx);
+    std::string command = "mkdir -p " + folder;
+    system(command.c_str());
     std::ofstream outfile(file);
     for(const std::string& str : strings){
         outfile << str << "\n";

@@ -2,7 +2,7 @@
 
 // Write FST, takes a file and writes the FST to a file
 // Usage: ./write_fst <input_dict_file> <output_file>
-// Ouput: Saved on bin/output_fst.txt
+// Output: Saved on bin/output_fst.txt
 int main(int argc, char* argv[]){
     if(argc != 3){
         std::cout << "Usage: ./write_fst <input_dict_file> <output_file>\n";

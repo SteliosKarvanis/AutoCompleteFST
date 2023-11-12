@@ -8,7 +8,7 @@
 
 // Time Counter, takes a file with a list of prefixes and returns the time it takes to autocomplete and binary search
 // Usage: ./time_counter <input_file>
-// Ouput: Saved on bin/times.txt
+// Output: Saved on bin/times.txt
 int main(int argc, char* argv[]){
     if(argc != 2){
         std::cout << "Usage: ./time_counter <input_file>\n";

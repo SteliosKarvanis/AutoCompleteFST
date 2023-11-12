@@ -3,7 +3,7 @@
 
 // Binary Search, takes a prefix and returns all words that start with that prefix
 // Usage: ./binary_search <prefix>
-// Ouput: Saved on bin/output_bin_search.txt
+// Output: Saved on bin/output_bin_search.txt
 int main(int argc, char* argv[]){
     if(argc != 2){
         std::cout << "Usage: ./binary_search <prefix>\n";
@@ -15,6 +15,6 @@ int main(int argc, char* argv[]){
     auto words = read_vector_from_file(data_file);
 
     std::vector<std::string> output_words = binary_search(text, words);
-    write_vector_to_file(output_words, "../bin/output_bin_search.txt");
+    write_vector_to_file(output_words, "../output_files/output_bin_search.txt");
     return 0;
 }
