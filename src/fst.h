@@ -15,11 +15,12 @@ public:
     ~FST();
     void buildFST(const std::string& filename);
     static bool check_data(const std::string& filename);
-    std::vector<std::string> levestein(const std::string& word, int dist);
+    std::vector<std::string> build_levestein_DFA(const std::string& word, int dist);
     std::vector<std::string> autocomplete(const std::string& prefix, int max_num_of_results = 20);
     void write_graph_to_file(const std::string& filename);
     int count_nodes();
     int memory_usage();
+    bool word_in_DFA(const std::string& word);
 
 protected:
     Node* root;
@@ -42,6 +43,7 @@ protected:
     void get_transitions_list_as_string(Node* base_node, const std::set<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
     char get_previous_node_transition_by_idx(Node* actual_node, int idx);
     void delete_node_tree(Node* node);
+    void reset_visited(Node* actual_node);
 };
 
 #endif

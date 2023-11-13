@@ -80,7 +80,8 @@ Node* FST::retrieve_node_with_prefix(const std::string& prefix){
     return actual_node;
 }
 
-std::vector<std::string> FST::levestein(const std::string& word, int dist){
+std::vector<std::string> FST::build_levestein_DFA(const std::string& word, int dist){
+    this->reset_visited(this->root);
     std::vector<std::string> output_words = std::vector<std::string>();
     this->levestein_dfs(output_words, this->root, word, "", dist, 0, 0);
     return output_words;
@@ -89,6 +90,7 @@ std::vector<std::string> FST::levestein(const std::string& word, int dist){
 void FST::levestein_dfs(std::vector<std::string>& output_words, Node* actual_node, const std::string& word, std::string curr_word, const int dist, int curr_dist, int char_idx){
     if(curr_dist > dist)
         return;
+    actual_node->visited = true;
     int dist_to_target = (int)word.size() - char_idx;
     // To may add a word, the node should be valid, and the curr_dist adding the missing suffix size should not exceed the dist
     if(actual_node->valid && curr_dist + dist_to_target <= dist){
@@ -351,4 +353,19 @@ void FST::get_nodes_list(Node* base_node, std::set<Node*>& output_nodes){
         Node* next_node = base_node->next_nodes[i];
         get_nodes_list(next_node, output_nodes);
     }
+}
+
+void FST::reset_visited(Node* actual_node){
+    if(actual_node->visited){
+        actual_node->visited = false;
+        for(int i = 0; i < actual_node->next_nodes.size(); i++)
+            this->reset_visited(actual_node->next_nodes[i]);
+    }
+}
+
+bool FST::word_in_DFA(const std::string& word){
+    auto prefix_node = this->retrieve_node_with_prefix(word);
+    if(prefix_node == nullptr)
+        return false;
+    return prefix_node->valid;
 }
