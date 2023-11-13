@@ -21,7 +21,7 @@ public:
     int count_nodes();
     int memory_usage();
 
-private:
+protected:
     Node* root;
     Node* final_frozen_node;
     // Build utils
