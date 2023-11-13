@@ -39,7 +39,7 @@ std::vector<std::string> FST::autocomplete(const std::string& prefix, int max_nu
     if(last_preffix_node == nullptr)
         return output_words;
     // Find words
-    DFS(last_preffix_node, prefix, output_words, max_num_of_results);
+    get_all_acceptable_words_from_node(last_preffix_node, prefix, output_words, max_num_of_results);
     return output_words;
 }
 
@@ -48,7 +48,7 @@ std::vector<std::string> FST::autocomplete(const std::string& prefix, int max_nu
 /// @param word: the current word build so far, from the root
 /// @param output_words: the output, the words that have the given word as a prefix 
 /// @param max_num_of_results: the maximum number of results to return (To avoid returning too many results for small prefixes)
-void FST::DFS(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max_num_of_results){
+void FST::get_all_acceptable_words_from_node(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max_num_of_results){
     if(output_words.size() == max_num_of_results)
         return;
     if(base_node->valid){
@@ -56,7 +56,7 @@ void FST::DFS(Node* base_node, const std::string& word, std::vector<std::string>
     }
     for(int i = 0; i < base_node->next_nodes.size(); i++){
         Node* next_node = base_node->next_nodes[i];
-        DFS(next_node, word + base_node->forward_transitions[i], output_words, max_num_of_results);
+        get_all_acceptable_words_from_node(next_node, word + base_node->forward_transitions[i], output_words, max_num_of_results);
     }
 }
 
