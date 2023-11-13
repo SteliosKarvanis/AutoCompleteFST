@@ -66,7 +66,7 @@ std::vector<std::string> AutoCompleteUI::result_factory(const std::string& word)
     if(this->current_mode == MODE::AUTOCOMPLETE)
         return this->fst->autocomplete(word);
     else
-        return this->fst->build_levestein_DFA(word, this->levenstein_distance);
+        return this->fst->levestein(word, this->levenstein_distance);
 }
 
 void AutoCompleteUI::create_actions(){
