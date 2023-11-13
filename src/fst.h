@@ -32,6 +32,7 @@ protected:
     static Node* get_last_next_node(Node* node);
     static char get_last_next_char(Node* node);
     Node* retrieve_new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size);
+    void delete_node_tree(Node* node);
     // Search utils
     void get_all_acceptable_words_from_node(Node* base_node, const std::string& word, std::vector<std::string>& output_words, int max_num_of_results);
     Node* retrieve_node_with_prefix(const std::string& prefix);
@@ -41,7 +42,6 @@ protected:
     int get_node_idx(Node* node, const std::set<Node*>& nodes_list);
     void get_transitions_list_as_string(Node* base_node, const std::set<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
     char get_previous_node_transition_by_idx(Node* actual_node, int idx);
-    void delete_node_tree(Node* node);
 };
 
 #endif
