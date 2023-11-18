@@ -182,8 +182,6 @@ void FST::add_node(Node* base_node, char transition){
 
     base_node->next_nodes.push_back(new_node);
     base_node->forward_transitions.push_back(transition);
-
-    new_node->previous_nodes.push_back(base_node);
 }
 
 /// @brief Get the node with the max common prefix with the new word
@@ -228,51 +226,61 @@ void FST::ingest_last_suffix(Node* branch_node){
         return;
 
     // Get last node added previously
+    std::vector<Node*> new_nodes_list;
+    new_nodes_list.push_back(branch_node);
     Node* last_new_node = branch_node;
-    while(!last_new_node->next_nodes.empty())
+    while(!last_new_node->next_nodes.empty()){
         last_new_node = get_last_next_node(last_new_node);
-
-    // Get an frozen node equals to a related no frozen node that can be replaced by the first one
-    Node* actual_new_node = last_new_node;
-    Node* actual_frozen_node = final_frozen_node;
-    Node* next_node;
-    // In each iteration, compares if actual_new_node and actual_frozen_node are equal and if both are valid for a new transition
-    while(actual_new_node != branch_node){
-        next_node = nullptr;
-        char curr_desired_char = get_previous_node_transition_by_idx(actual_new_node, actual_new_node->previous_nodes.size() - 1);
-        Node* next_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
-        // The branch node is not part of the suffix that was added and the next node must not have branches
-        if(next_new_node == branch_node || next_new_node->next_nodes.size() > 1)
-            break;
-        for(int i = 0; i < actual_frozen_node->previous_nodes.size(); i++){
-            Node* previous_node = actual_frozen_node->previous_nodes[i];
-            // The previous node must be frozen
-            if(!previous_node->frozen)
-                continue;
-            // The previous node must have the same valid state as the next_new_node
-            if(previous_node->valid != next_new_node->valid)
-                continue;
-            // The previous node must not have branches
-            if(previous_node->next_nodes.size() > 1)
-                continue;
-
-            if(get_previous_node_transition_by_idx(actual_frozen_node, i) == curr_desired_char){
-                next_node = previous_node;
-                break;
-            }
-        }
-        // No equals node found
-        if(next_node == nullptr)
-            break;
-        actual_frozen_node = next_node;
-        actual_new_node = next_new_node;
+        new_nodes_list.push_back(last_new_node);
+    }
+    bool suffix_added = false;
+    int curr_idx = (int)new_nodes_list.size();
+    ingest_last_suffix_dfs(root, new_nodes_list, curr_idx, suffix_added);
+    if(!suffix_added){
+        auto node = new_nodes_list[(int)new_nodes_list.size() - 2];
+        node->next_nodes[node->next_nodes.size() - 1] = final_frozen_node;
     }
 
-    // Updates the transitions
-    actual_new_node = actual_new_node->previous_nodes[actual_new_node->previous_nodes.size() - 1];
-    delete_node_tree(get_last_next_node(actual_new_node));
-    actual_new_node->next_nodes[actual_new_node->next_nodes.size() - 1] = actual_frozen_node;
-    actual_frozen_node->previous_nodes.push_back(actual_new_node);
+}
+
+bool FST::ingest_last_suffix_dfs(Node* actual_node, const std::vector<Node*>& new_nodes_list, int& curr_new_node_idx, bool& added){
+    // If is the final node
+    if(actual_node == final_frozen_node){
+        curr_new_node_idx = (int)new_nodes_list.size() - 2;
+        return true;
+    }
+    for(int i = 0; i < actual_node->next_nodes.size() && !added; i++){
+        bool valid = ingest_last_suffix_dfs(actual_node->next_nodes[i], new_nodes_list, curr_new_node_idx, added);
+        if(!valid)
+            continue;
+        Node* new_node = new_nodes_list[curr_new_node_idx];
+        char transition = actual_node->forward_transitions[i];
+        bool nodes_equal = compare_nodes(actual_node, new_node, transition);
+        if(nodes_equal && curr_new_node_idx > 0){
+            curr_new_node_idx--;
+            return true;
+        }
+        if(actual_node->next_nodes[i] == this->final_frozen_node)
+            continue;
+        // Update transitions
+        // delete_node_tree(new_node->next_nodes[new_node->next_nodes.size()-1]);
+        new_node->next_nodes[new_node->next_nodes.size() - 1] = actual_node->next_nodes[i];
+        added = true;
+        return false;
+    }
+    return false;
+}
+
+bool FST::compare_nodes(Node* actual_node, Node* new_node, char transition){
+    if((int)actual_node->next_nodes.size() > 1 || (int)new_node->next_nodes.size() > 1)
+        return false;
+    if(!actual_node->frozen)
+        return false;
+    if(actual_node->valid != new_node->valid)
+        return false;
+    if(new_node->forward_transitions[new_node->forward_transitions.size() - 1] != transition)
+        return false;
+    return true;
 }
 
 void FST::delete_node_tree(Node* node){
@@ -296,15 +304,6 @@ bool FST::check_data(const std::string& filename){
         previous_word = word;
     }
     return true;
-}
-
-char FST::get_previous_node_transition_by_idx(Node* actual_node, int idx){
-    Node* previous_node = actual_node->previous_nodes[idx];
-    for(int i = 0; i < previous_node->forward_transitions.size(); i++){
-        if(previous_node->next_nodes[i] == actual_node)
-            return previous_node->forward_transitions[i];
-    }
-    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

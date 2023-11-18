@@ -7,7 +7,6 @@ struct Node{
     bool valid = false;
     bool frozen = false;
     std::vector<Node*> next_nodes = std::vector<Node*>();
-    std::vector<Node*> previous_nodes = std::vector<Node*>();
     std::vector<char> forward_transitions = std::vector<char>();
 };
 

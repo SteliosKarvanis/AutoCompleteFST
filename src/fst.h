@@ -29,6 +29,8 @@ protected:
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
     void add_node(Node* base_node, char transition);
     void ingest_last_suffix(Node* branch_node);
+    bool ingest_last_suffix_dfs(Node* actual_frozen_node, const std::vector<Node*>& new_nodes_list, int& curr_new_node_idx, bool& added);
+    bool compare_nodes(Node* actual_node, Node* new_node, char transition);
     static Node* get_last_next_node(Node* node);
     static char get_last_next_char(Node* node);
     Node* retrieve_new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size);
@@ -41,7 +43,6 @@ protected:
     void get_nodes_list(Node* base_node, std::set<Node*>& output_nodes);
     int get_node_idx(Node* node, const std::set<Node*>& nodes_list);
     void get_transitions_list_as_string(Node* base_node, const std::set<Node*>& nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
-    char get_previous_node_transition_by_idx(Node* actual_node, int idx);
 };
 
 #endif
