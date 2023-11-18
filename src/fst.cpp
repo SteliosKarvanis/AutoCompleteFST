@@ -133,13 +133,18 @@ void FST::buildFST(const std::string& filename){
     int existent_prefix_size;
     Node* last_common_node;
     std::ifstream myfile(filename);
+    int i = 0;
     while(std::getline(myfile, word)){
         last_common_node = retrieve_new_word_max_existent_prefix(word, existent_prefix_size);
         this->ingest_last_suffix(last_common_node);
         this->froze_node_tree(get_last_next_node(last_common_node));
         this->add_suffix(last_common_node, word, existent_prefix_size);
+        //this->write_graph_to_file("../graph_" + std::to_string(i) + ".txt");
+        i++;
+        std::cout << i << std::endl;
     }
     this->ingest_last_suffix(this->root);
+    //this->write_graph_to_file("../graph_" + std::to_string(i) + ".txt");
 }
 
 /// @brief Froze all the node tree from the given node (including the base node)
@@ -233,24 +238,23 @@ void FST::ingest_last_suffix(Node* branch_node){
         last_new_node = get_last_next_node(last_new_node);
         new_nodes_list.push_back(last_new_node);
     }
-    bool suffix_added = false;
     int curr_idx = (int)new_nodes_list.size();
-    ingest_last_suffix_dfs(root, new_nodes_list, curr_idx, suffix_added);
-    if(!suffix_added){
-        auto node = new_nodes_list[(int)new_nodes_list.size() - 2];
-        node->next_nodes[node->next_nodes.size() - 1] = final_frozen_node;
-    }
-
+    int max_common_suffix_size = -1;
+    Node* max_suffix_node = nullptr;
+    Node* new_node_with_suffix = nullptr;
+    ingest_last_suffix_dfs(root, new_nodes_list, curr_idx, max_suffix_node, new_node_with_suffix, max_common_suffix_size);
+    delete_node_tree(new_node_with_suffix->next_nodes[new_node_with_suffix->next_nodes.size() - 1]);
+    new_node_with_suffix->next_nodes[new_node_with_suffix->next_nodes.size() - 1] = max_suffix_node;
 }
 
-bool FST::ingest_last_suffix_dfs(Node* actual_node, const std::vector<Node*>& new_nodes_list, int& curr_new_node_idx, bool& added){
+bool FST::ingest_last_suffix_dfs(Node* actual_node, const std::vector<Node*>& new_nodes_list, int& curr_new_node_idx, Node*& max_suffix_node, Node*& max_suffix_new_node, int& max_suffix_size){
     // If is the final node
     if(actual_node == final_frozen_node){
         curr_new_node_idx = (int)new_nodes_list.size() - 2;
         return true;
     }
-    for(int i = 0; i < actual_node->next_nodes.size() && !added; i++){
-        bool valid = ingest_last_suffix_dfs(actual_node->next_nodes[i], new_nodes_list, curr_new_node_idx, added);
+    for(int i = 0; i < actual_node->next_nodes.size(); i++){
+        bool valid = ingest_last_suffix_dfs(actual_node->next_nodes[i], new_nodes_list, curr_new_node_idx, max_suffix_node, max_suffix_new_node, max_suffix_size);
         if(!valid)
             continue;
         Node* new_node = new_nodes_list[curr_new_node_idx];
@@ -260,12 +264,13 @@ bool FST::ingest_last_suffix_dfs(Node* actual_node, const std::vector<Node*>& ne
             curr_new_node_idx--;
             return true;
         }
-        if(actual_node->next_nodes[i] == this->final_frozen_node)
-            continue;
         // Update transitions
-        delete_node_tree(new_node->next_nodes[new_node->next_nodes.size() - 1]);
-        new_node->next_nodes[new_node->next_nodes.size() - 1] = actual_node->next_nodes[i];
-        added = true;
+        int common_suffix_nodes_size = (int)new_nodes_list.size() - curr_new_node_idx;
+        if(max_suffix_size == -1 || common_suffix_nodes_size > max_suffix_size){
+            max_suffix_size = common_suffix_nodes_size;
+            max_suffix_new_node = new_node;
+            max_suffix_node = actual_node->next_nodes[i];
+        }
         return false;
     }
     return false;
@@ -276,7 +281,7 @@ bool FST::compare_nodes(Node* actual_node, Node* new_node, char transition){
         return false;
     if(!actual_node->frozen)
         return false;
-    if(actual_node->valid != new_node->valid)
+    if((actual_node->valid != new_node->valid))
         return false;
     if(new_node->forward_transitions[new_node->forward_transitions.size() - 1] != transition)
         return false;

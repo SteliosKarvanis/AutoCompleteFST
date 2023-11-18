@@ -29,7 +29,7 @@ protected:
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
     void add_node(Node* base_node, char transition);
     void ingest_last_suffix(Node* branch_node);
-    bool ingest_last_suffix_dfs(Node* actual_frozen_node, const std::vector<Node*>& new_nodes_list, int& curr_new_node_idx, bool& added);
+    bool ingest_last_suffix_dfs(Node* actual_frozen_node, const std::vector<Node*>& new_nodes_list, int& curr_new_node_idx, Node*& max_suffix_node, Node*& max_suffix_new_node, int& max_suffix_size);
     bool compare_nodes(Node* actual_node, Node* new_node, char transition);
     static Node* get_last_next_node(Node* node);
     static char get_last_next_char(Node* node);
