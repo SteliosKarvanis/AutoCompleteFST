@@ -263,7 +263,7 @@ bool FST::ingest_last_suffix_dfs(Node* actual_node, const std::vector<Node*>& ne
         if(actual_node->next_nodes[i] == this->final_frozen_node)
             continue;
         // Update transitions
-        // delete_node_tree(new_node->next_nodes[new_node->next_nodes.size()-1]);
+        delete_node_tree(new_node->next_nodes[new_node->next_nodes.size() - 1]);
         new_node->next_nodes[new_node->next_nodes.size() - 1] = actual_node->next_nodes[i];
         added = true;
         return false;
