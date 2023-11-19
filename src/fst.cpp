@@ -109,24 +109,9 @@ void FST::buildFST(const std::string& filename){
     while(std::getline(myfile, word)){
         last_common_node = new_word_max_existent_prefix(word, existent_prefix_size);
         this->ingest_last_suffix(last_common_node);
-        this->froze_node_tree(get_last_next_node(last_common_node));
         this->add_suffix(last_common_node, word, existent_prefix_size);
     }
     this->ingest_last_suffix(this->root);
-}
-
-void FST::froze_node_tree(Node* node){
-    // if node is already frozen, all her tree should be frozen
-    if(node == nullptr || node->frozen)
-        return;
-
-    node->frozen = true;
-    // Recursively froze the tree
-    for(auto it = node->next_nodes.begin(); it != node->next_nodes.end(); it++){
-        if(it->second->frozen)
-            continue;
-        froze_node_tree(it->second);
-    }
 }
 
 Node* FST::get_last_next_node(Node* node){
@@ -193,8 +178,6 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
 }
 
 bool FST::compare_nodes(Node* actual_node, Node* new_node){
-    if(!actual_node->frozen)
-        return false;
     if((actual_node->valid != new_node->valid))
         return false;
     if(new_node->next_nodes != actual_node->next_nodes)
