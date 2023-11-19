@@ -2,7 +2,6 @@
 
 FST::FST(){
     this->root = new Node();
-    this->final_frozen_node = nullptr;
 }
 
 FST::~FST(){
@@ -122,10 +121,6 @@ void FST::froze_node_tree(Node* node){
         return;
 
     node->frozen = true;
-    // Update the final frozen node
-    if(node->valid && node->next_nodes.empty() && this->final_frozen_node == nullptr)
-        this->final_frozen_node = node;
-
     // Recursively froze the tree
     for(auto it = node->next_nodes.begin(); it != node->next_nodes.end(); it++){
         if(it->second->frozen)
