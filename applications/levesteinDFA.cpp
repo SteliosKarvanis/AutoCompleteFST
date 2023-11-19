@@ -4,7 +4,7 @@
 int main(){
     auto dfa = new LevesteinDFA();
     dfa->build("woof", 1);
-    dfa->write_graph_to_file("../dfa.txt");
+    dfa->write_to_file("../dfa.txt");
     std::vector<std::string> tests;
     tests.push_back("");
     tests.push_back("w");

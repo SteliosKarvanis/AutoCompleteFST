@@ -7,6 +7,7 @@
 #include <map>
 #include <fstream>
 #include "data_types.h"
+#include "utils.h"
 
 #define STATE std::map<int, int>
 #define DEFAULT_CHAR '*'
@@ -15,7 +16,7 @@ class LevesteinDFA{
 public:
     LevesteinDFA();
     ~LevesteinDFA() = default;
-    void write_graph_to_file(const std::string& filename);
+    void write_to_file(const std::string& filename);
     bool check(const std::string& word);
     void build(const std::string& word, int distance);
 private:
@@ -29,9 +30,6 @@ private:
     STATE get_next_state_for_transition(STATE actual_state, char transition);
     Node* get_node(const STATE& state);
     bool is_valid_state(const STATE& state);
-    void get_transitions_list_as_string(Node* base_node, const std::set<Node*>& all_nodes_list, std::vector<bool>& visited, std::string& transitions_list_str);
-    int get_node_idx(Node* node, const std::set<Node*>& all_nodes_list);
-    void get_nodes_tree_list_from_node(Node* base_node, std::set<Node*>& output_nodes);
 };
 
 #endif
