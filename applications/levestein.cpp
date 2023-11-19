@@ -4,9 +4,9 @@
 // Usage: ./levestein <prefix> <dist>
 // Output: Saved on bin/output_levestein.txt
 int main(int argc, char* argv[]){
-    std::string file = "../data/american-english-sorted";
+    std::string file = "../american_fst.txt";
     FST* fst = new FST();
-    fst->buildFST(file);
+    fst->readFST(file);
 
     if(argc == 3){
         std::string text = argv[1];

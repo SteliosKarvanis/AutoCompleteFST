@@ -14,9 +14,9 @@ int main(int argc, char* argv[]){
         return 1;
     }
     std::string input_file = argv[1];
-    std::string file = "../data/american-english-sorted";
+    std::string file = "../american_fst.txt";
     FST* fst = new FST();
-    fst->buildFST(file);
+    fst->readFST(file);
     auto words_list = read_vector_from_file(file);
     auto input_examples = read_vector_from_file(input_file);
     std::ofstream out_file("../times.txt");

@@ -7,9 +7,9 @@
 // Usage: ./autocomplete <input_file>
 // Output: Saved on bin/output_autocomplete.txt
 int main(int argc, char* argv[]){
-    std::string file = "../data/american-english-sorted";
+    std::string file = "../american_fst.txt";
     FST* fst = new FST();
-    fst->buildFST(file);
+    fst->readFST(file);
     if(argc == 2){
         std::string input_file = argv[1];
         auto inputs = read_vector_from_file(input_file);
@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
         }
     }
     else
-        std::cout << "Usage: ./autocomplete <prefix>\n";
+        std::cout << "Usage: ./autocomplete <input_file>\n";
     delete fst;
     return 0;
 }

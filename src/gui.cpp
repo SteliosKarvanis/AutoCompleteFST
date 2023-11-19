@@ -24,7 +24,7 @@ AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWi
     this->current_mode = MODE::AUTOCOMPLETE;
     this->levenstein_distance = 0;
 
-    this->fst->buildFST(data_file);
+    this->fst->readFST(data_file);
     this->create_widgets();
     this->create_layout();
     this->create_actions();

@@ -101,6 +101,29 @@ void FST::levestein_dfs(std::vector<std::string>& output_words, Node* actual_nod
 /////////////////////////////// BUILD UTILS ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+
+void FST::readFST(const std::string& filename){
+    std::string line;
+    std::ifstream myfile(filename);
+
+    nodes_list.push_back(new Node());
+    this->root = nodes_list[0];
+    while(std::getline(myfile, line)){
+        std::stringstream ss(line);
+        int base_node_idx, next_node_idx;
+        char transition;
+        bool base_node_valid, next_node_valid;
+        ss >> base_node_idx >> next_node_idx >> transition >> base_node_valid >> next_node_valid;
+        while(base_node_idx >= (int)nodes_list.size())
+            nodes_list.push_back(new Node());
+        while(next_node_idx >= (int)nodes_list.size())
+            nodes_list.push_back(new Node());
+        nodes_list[base_node_idx]->valid = base_node_valid;
+        nodes_list[next_node_idx]->valid = next_node_valid;
+        nodes_list[base_node_idx]->next_nodes.insert(std::pair<char, Node*>(transition, nodes_list[next_node_idx]));
+    }
+}
+
 void FST::buildFST(const std::string& filename){
     std::string word;
     int existent_prefix_size;
@@ -173,7 +196,7 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
             }
         }
     }
-    this->nodes_list.insert(next_node);
+    this->nodes_list.push_back(next_node);
     return false;
 }
 

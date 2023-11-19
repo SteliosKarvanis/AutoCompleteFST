@@ -3,9 +3,9 @@
 
 #include <string>
 #include <set>
+#include <sstream>
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
 #include "data_types.h"
 #include "utils.h"
 
@@ -14,6 +14,7 @@ public:
     FST();
     ~FST();
     void buildFST(const std::string& filename);
+    void readFST(const std::string& filename);
     static bool check_data(const std::string& filename);
     std::vector<std::string> levestein(const std::string& word, int dist);
     std::vector<std::string> autocomplete(const std::string& prefix, int max_num_of_results = 20);
@@ -24,7 +25,7 @@ public:
 protected:
     Node* root;
     Node* final_frozen_node;
-    std::set<Node*> nodes_list;
+    std::vector<Node*> nodes_list;
     // Build utils
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
     void add_node(Node* base_node, char transition);
