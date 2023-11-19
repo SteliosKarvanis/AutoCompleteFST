@@ -1,16 +1,13 @@
 import os
 import argparse
-import subprocess
 from graphviz import Digraph
 
 """
 Script for visualizing FST graph.
 """
-os.chdir("..")
 BIN_FOLDER = "bin"
 CPP_BIN = "./write_fst"
 OUTPUT_DIR = "output_files"
-OUTPUT_TXT_FILE = "graph.txt"
 VALID_TO_FILLED = {
     "0": None,
     "1": "filled",
@@ -18,23 +15,19 @@ VALID_TO_FILLED = {
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "--input_dict_file", help="File with FST dictionary", type=str, required=True
+    "--input_graph_file", help="File with FST dictionary", type=str, required=True
 )
 args = parser.parse_args()
 
-input_dict_file = args.input_dict_file
-output_image_file = f"output_graph_{input_dict_file.split('.')[0].split('/')[-1]}"
+input_graph_file = args.input_graph_file
+output_image_file = f"output_graph_{input_graph_file.split('/')[-1].split('.')[0]}"
+print(output_image_file)
 # Generate txt file with graph transitions,
 # In format: "start_node_idx, end_node_idx, transition_label, start_node_valid, end_node_valid"
-os.chdir(BIN_FOLDER)
-process = subprocess.run(
-    [CPP_BIN, f"./../{input_dict_file}", f"./../{OUTPUT_TXT_FILE}"]
-)
-os.chdir("..")
 
 # Read graph from txt file
-graph = Digraph(output_image_file, filename=f"{OUTPUT_DIR}/{output_image_file}", format="png")
-with open(OUTPUT_TXT_FILE, "r") as f:
+graph = Digraph(output_image_file, filename=f"../{OUTPUT_DIR}/{output_image_file}", format="png")
+with open(input_graph_file, "r") as f:
     for line in f:
         line = line.strip()
         if line:
@@ -46,7 +39,3 @@ with open(OUTPUT_TXT_FILE, "r") as f:
 
 # Generate graph visualization
 graph.render(view=True)
-
-# Remove unnecessary files
-os.remove(OUTPUT_TXT_FILE)
-os.remove(f"{OUTPUT_DIR}/{output_image_file}")

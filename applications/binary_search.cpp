@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
     if(argc == 2){
         std::string text = argv[1];
         std::vector<std::string> output_words = binary_search(text, words);
-        write_vector_to_file(output_words, "../output_files/output_bin_search.txt");
+        write_vector_to_file(output_words, "../output_files/output_bin_search.txt", false);
     }
     else
         std::cout << "Usage: ./binary_search <prefix>\n";
