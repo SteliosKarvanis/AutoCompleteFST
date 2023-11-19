@@ -24,7 +24,6 @@ public:
 
 protected:
     Node* root;
-    Node* final_frozen_node;
     std::vector<Node*> nodes_list;
     // Build utils
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
