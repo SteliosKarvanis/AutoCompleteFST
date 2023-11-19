@@ -5,6 +5,7 @@
 
 struct Node{
     bool valid = false;
+    bool frozen = false;
     std::map<char, Node*> next_nodes = std::map<char, Node*>();
 };
 
