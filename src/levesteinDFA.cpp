@@ -4,11 +4,14 @@
 #include <vector>
 #include "data_types.h"
 
-LevesteinDFA::LevesteinDFA(std::string word, int distance){
+LevesteinDFA::LevesteinDFA(){}
+
+void LevesteinDFA::build(const std::string& word, int distance){
     word_ = word;
     max_distance_ = distance;
     root_ = new Node();
-    
+    char_set_.clear();
+    char_set_.shrink_to_fit();
     char_set_.push_back(DEFAULT_CHAR);
     // Initialize char_set
     for(char c: word_){
@@ -30,8 +33,9 @@ LevesteinDFA::LevesteinDFA(std::string word, int distance){
             break;
         initial_state[i] = i;
     }
+    state_to_node_.clear();
     state_to_node_[initial_state] = root_;
-    build();
+    build_recursion(state_to_node_.begin()->first);
 }
 
 bool LevesteinDFA::check(const std::string& word){
@@ -52,11 +56,6 @@ bool LevesteinDFA::check(const std::string& word){
     }
     return actual_node->valid;
 }
-
-void LevesteinDFA::build(){
-    build_recursion(state_to_node_.begin()->first);
-}
-
 void LevesteinDFA::build_recursion(STATE actual_state){
     if(actual_state.empty())
         return;

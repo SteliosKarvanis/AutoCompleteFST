@@ -6,6 +6,8 @@ std::string MODE_TO_STRING(MODE MODE){
             return "AUTOCOMPLETE";
         case MODE::LEVENSHTEIN:
             return "LEVENSHTEIN";
+        case MODE::LEVENSHTEIN_DFA:
+            return "LEVENSHTEIN_DFA";
         default:
             return "NONE";
     }
@@ -22,7 +24,8 @@ AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWi
 
     this->fst = new FST();
     this->current_mode = MODE::AUTOCOMPLETE;
-    this->levenstein_distance = 0;
+
+    this->levesteinDFA = new LevesteinDFA();
 
     this->fst->readFST(data_file);
     this->create_widgets();
@@ -47,32 +50,57 @@ void AutoCompleteUI::get_predictions(){
 
 void AutoCompleteUI::change_mode(int mode_idx){
     this->current_mode = static_cast<MODE>(mode_idx);
-    if(this->current_mode == MODE::LEVENSHTEIN)
+    if(this->current_mode == MODE::LEVENSHTEIN){
         this->levenstein_distance_label->setVisible(true);
-    else
+        this->levenstein_key_label->setVisible(false);
+    }
+    else if(this->current_mode == MODE::LEVENSHTEIN_DFA){
+        this->levenstein_distance_label->setVisible(true);
+        this->levenstein_key_label->setVisible(true);
+        this->build_dfa();
+    }
+    else{
         this->levenstein_distance_label->setVisible(false);
+        this->levenstein_key_label->setVisible(false);
+    }
+    this->get_predictions();
     this->update();
 }
 
 void AutoCompleteUI::change_levenstein_distance(){
     if(this->levenstein_distance_label->hasAcceptableInput() == false)
         return;
-
-    std::string input_text = this->levenstein_distance_label->text().toStdString();
-    this->levenstein_distance = std::stoi(input_text);
+    if(current_mode == MODE::LEVENSHTEIN_DFA)
+        this->build_dfa();
+    this->get_predictions();
 }
 
 std::vector<std::string> AutoCompleteUI::result_factory(const std::string& word){
     if(this->current_mode == MODE::AUTOCOMPLETE)
         return this->fst->autocomplete(word);
-    else
-        return this->fst->levestein(word, this->levenstein_distance);
+    else if(this->current_mode == MODE::LEVENSHTEIN){
+        int levestein_distance = this->levenstein_distance_label->text().toInt();
+        return this->fst->levestein(word, levestein_distance);
+    }
+    else{
+        bool valid = this->levesteinDFA->check(word);
+        if(valid)
+            return {"true"};
+        return {"false"};
+    }
+}
+void AutoCompleteUI::build_dfa(){
+    std::string text = this->levenstein_key_label->text().toStdString();
+    int distance = this->levenstein_distance_label->text().toInt();
+    this->levesteinDFA->build(text, distance);
+    this->get_predictions();
 }
 
 void AutoCompleteUI::create_actions(){
     connect(input_field, &QLineEdit::textChanged, this, &AutoCompleteUI::get_predictions);
     connect(mode_box, SIGNAL(currentIndexChanged(int)), this, SLOT(change_mode(int)));
     connect(levenstein_distance_label, &QLineEdit::textChanged, this, &AutoCompleteUI::change_levenstein_distance);
+    connect(levenstein_key_label, &QLineEdit::textChanged, this, &AutoCompleteUI::build_dfa);
 }
 
 void AutoCompleteUI::create_widgets(){
@@ -93,12 +121,16 @@ void AutoCompleteUI::create_widgets(){
     this->levenstein_distance_label->setText(QString::fromStdString("0"));
     this->levenstein_distance_label->setVisible(false);
     this->levenstein_distance_label->setValidator(new QIntValidator(0, INT_MAX));
+
+    this->levenstein_key_label = new QLineEdit(central_widget);
+    this->levenstein_key_label->setVisible(false);
 }
 
 void AutoCompleteUI::create_layout(){
     QHBoxLayout* mode_layout = new QHBoxLayout();
     mode_layout->addWidget(mode_box);
     mode_layout->addWidget(levenstein_distance_label);
+    mode_layout->addWidget(levenstein_key_label);
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addLayout(mode_layout);

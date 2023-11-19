@@ -2,7 +2,8 @@
 #include "../src/levesteinDFA.h"
 
 int main(){
-    auto dfa = new LevesteinDFA("woof", 1);
+    auto dfa = new LevesteinDFA();
+    dfa->build("woof", 1);
     dfa->write_graph_to_file("../dfa.txt");
     std::vector<std::string> tests;
     tests.push_back("");

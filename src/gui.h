@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include "fst.h"
+#include "levesteinDFA.h"
 
 enum class MODE{
     ///////////////////////////////////////////////////////////////////////
@@ -21,7 +22,8 @@ enum class MODE{
     ///////////////////////////////////////////////////////////////////////
     AUTOCOMPLETE = 0,
     LEVENSHTEIN = 1,
-    MODE_COUNT = 2,
+    LEVENSHTEIN_DFA = 2,
+    MODE_COUNT = 3,
 };
 
 std::string MODE_TO_STRING(MODE MODE);
@@ -37,17 +39,18 @@ public slots:
     void get_predictions();
     void change_mode(int mode_idx);
     void change_levenstein_distance();
-
+    void build_dfa();
 private:
     FST* fst;
+    LevesteinDFA* levesteinDFA;
     QWidget* central_widget;
     QLineEdit* input_field;
     QLabel* display_label;
     QComboBox* mode_box;
     QLineEdit* levenstein_distance_label;
+    QLineEdit* levenstein_key_label;
 
     MODE current_mode;
-    int levenstein_distance;
     std::vector<std::string> result_factory(const std::string& word);
 
     void create_actions();

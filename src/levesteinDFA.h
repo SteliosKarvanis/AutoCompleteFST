@@ -13,10 +13,11 @@
 
 class LevesteinDFA{
 public:
-    LevesteinDFA(std::string word, int distance);
+    LevesteinDFA();
     ~LevesteinDFA() = default;
     void write_graph_to_file(const std::string& filename);
     bool check(const std::string& word);
+    void build(const std::string& word, int distance);
 private:
     std::string word_;
     int max_distance_;
@@ -24,7 +25,6 @@ private:
     std::vector<char> char_set_;
     std::map<STATE, Node*> state_to_node_;
     
-    void build();
     void build_recursion(STATE actual_state);
     STATE get_next_state_for_transition(STATE actual_state, char transition);
     Node* get_node(const STATE& state);
