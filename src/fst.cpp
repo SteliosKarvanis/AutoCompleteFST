@@ -13,7 +13,7 @@ int FST::count_nodes(){
 }
 
 int FST::memory_usage(){
-    int total_memory = 0;
+    int total_memory = sizeof(nodes_list);
     for(Node* node : this->nodes_list)
         total_memory += sizeof(*node);
     return total_memory;
@@ -135,6 +135,7 @@ void FST::buildFST(const std::string& filename){
         this->add_suffix(last_common_node, word, existent_prefix_size);
     }
     this->ingest_last_suffix(this->root);
+    this->nodes_list.push_back(this->root);
 }
 
 Node* FST::get_last_next_node(Node* node){
