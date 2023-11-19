@@ -215,7 +215,7 @@ bool FST::check_data(const std::string& filename){
 void FST::write_graph_to_file(const std::string& filename){
     std::set<Node*> all_nodes_list;
     get_nodes_tree_list_from_node(this->root, all_nodes_list);
-    std::vector<bool> visited(nodes_list.size(), false);
+    std::vector<bool> visited(all_nodes_list.size(), false);
     std::string transitions_list_str;
     get_transitions_list_as_string(this->root, all_nodes_list, visited, transitions_list_str);
     std::ofstream output_file(filename);
