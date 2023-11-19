@@ -18,7 +18,7 @@ int get_memory_usage_from_vector(std::vector<std::string> words){
 int main(){
     auto files = {
         "../data/sample.txt",
-        "../data/american-english-sorted",
+        "../data/american_english_sorted.txt",
     };
     for(auto file : files){
         std::cout << "File: " << file << std::endl;

@@ -6,7 +6,7 @@
 // Output: Saved on bin/output_bin_search.txt
 int main(int argc, char* argv[]){
     // Read Data 
-    std::string data_file = "../data/american-english-sorted";
+    std::string data_file = "../data/american_english_sorted.txt";
     auto words = read_vector_from_file(data_file);
     if(argc == 2){
         std::string text = argv[1];
