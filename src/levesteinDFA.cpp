@@ -10,20 +10,20 @@ void LevesteinDFA::build(const std::string& word, int distance){
     word_ = word;
     max_distance_ = distance;
     root_ = new Node();
-    char_set_.clear();
-    char_set_.shrink_to_fit();
-    char_set_.push_back(DEFAULT_CHAR);
+    char_list_.clear();
+    char_list_.shrink_to_fit();
+    char_list_.push_back(DEFAULT_CHAR);
     // Initialize char_set
     for(char c: word_){
         bool found = false;
-        for(char char_already_added : char_set_){
+        for(char char_already_added : char_list_){
             if(c == char_already_added){
                 found = true;
                 break;
             }
         }
         if(!found)
-            char_set_.push_back(c);
+            char_list_.push_back(c);
     }
     
     // Initialize state_to_node
@@ -60,7 +60,7 @@ void LevesteinDFA::build_recursion(STATE actual_state){
     if(actual_state.empty())
         return;
     Node* actual_node = get_node(actual_state);
-    for(char c: char_set_){
+    for(char c: char_list_){
         STATE next_state = get_next_state_for_transition(actual_state, c);
         Node* next_node = get_node(next_state);
         if(next_node == nullptr){

@@ -22,7 +22,7 @@ private:
     std::string word_;
     int max_distance_;
     Node* root_;
-    std::vector<char> char_set_;
+    std::vector<char> char_list_;
     std::map<STATE, Node*> state_to_node_;
     
     void build_recursion(STATE actual_state);
