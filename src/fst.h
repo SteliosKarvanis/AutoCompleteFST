@@ -24,13 +24,12 @@ public:
 protected:
     Node* root;
     Node* final_frozen_node;
-    std::set<Node*> nodes_list;
     // Build utils
     void froze_node_tree(Node* node);
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
     void add_node(Node* base_node, char transition);
     void ingest_last_suffix(Node* branch_node);
-    bool ingest_last_suffix_recursion(Node* actual_node);
+    Node* ingest_last_suffix_recursion(Node* actual_node);
     bool compare_nodes(Node* actual_node, Node* new_node);
     static Node* get_last_next_node(Node* node);
     static char get_last_next_char(Node* node);

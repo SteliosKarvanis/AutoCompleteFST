@@ -10,12 +10,16 @@ FST::~FST(){
 }
 
 int FST::count_nodes(){
-    return this->nodes_list.size();
+    std::set<Node*> nodes_list;
+    get_nodes_tree_list_from_node(this->root, nodes_list);
+    return nodes_list.size();
 }
 
 int FST::memory_usage(){
+    std::set<Node*> nodes_list;
+    get_nodes_tree_list_from_node(this->root, nodes_list);
     int total_memory = 0;
-    for(Node* node : this->nodes_list)
+    for(Node* node : nodes_list)
         total_memory += sizeof(*node);
     return total_memory;
 }
@@ -147,6 +151,7 @@ char FST::get_last_next_char(Node* node){
 void FST::add_node(Node* base_node, char transition){
     Node* new_node = new Node();
     base_node->next_nodes.insert(std::pair<char, Node*>(transition, new_node));
+    new_node->previous_nodes.insert(base_node);
 }
 
 Node* FST::new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size){
@@ -171,30 +176,36 @@ void FST::add_suffix(Node* base_node, const std::string& word, int common_prefix
 }
 
 void FST::ingest_last_suffix(Node* branch_node){
+    // Do nothing if there is no frozen node yet 
+    // Cases where the word been added is the first word, or the first word with a new suffix
+    if(final_frozen_node == nullptr)
+        return;
     // Do nothing if the branch node have no next nodes 
     // Cases where the word been added is a continuation of the last word added
     if(branch_node->next_nodes.empty())
         return;
 
     ingest_last_suffix_recursion(branch_node);
+    branch_node->frozen = false;
 }
 
-bool FST::ingest_last_suffix_recursion(Node* actual_node){
+Node* FST::ingest_last_suffix_recursion(Node* actual_node){
     auto next_node = get_last_next_node(actual_node);
     if(next_node == nullptr)
-        return true;
-    bool equal = ingest_last_suffix_recursion(next_node);
-    if(equal){
-        for(Node* node : this->nodes_list){
-            if(compare_nodes(node, next_node)){
-                actual_node->next_nodes[get_last_next_char(actual_node)] = node;
-                delete next_node;
-                return true;
+        return final_frozen_node;
+    Node* node = ingest_last_suffix_recursion(next_node);
+    if(node != nullptr){
+        actual_node->next_nodes.rbegin()->second = node;
+        node->previous_nodes.insert(actual_node);
+        delete next_node;
+
+        for(Node* previous_node : node->previous_nodes){
+            if(compare_nodes(previous_node, actual_node)){
+                return previous_node;
             }
         }
     }
-    this->nodes_list.insert(next_node);
-    return false;
+    return nullptr;
 }
 
 bool FST::compare_nodes(Node* actual_node, Node* new_node){
@@ -237,7 +248,7 @@ bool FST::check_data(const std::string& filename){
 void FST::write_graph_to_file(const std::string& filename){
     std::set<Node*> all_nodes_list;
     get_nodes_tree_list_from_node(this->root, all_nodes_list);
-    std::vector<bool> visited(nodes_list.size(), false);
+    std::vector<bool> visited(all_nodes_list.size(), false);
     std::string transitions_list_str;
     get_transitions_list_as_string(this->root, all_nodes_list, visited, transitions_list_str);
     std::ofstream output_file(filename);
