@@ -22,8 +22,8 @@ public:
     int memory_usage();
 
 protected:
-    Node* root;
-    std::vector<Node*> nodes_list;
+    Node* root_;
+    std::vector<Node*> frozen_nodes_list_;
     // Build utils
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
     void add_node(Node* base_node, char transition);

@@ -1,21 +1,21 @@
 #include "fst.h"
 
 FST::FST(){
-    this->root = new Node();
+    this->root_ = new Node();
 }
 
 FST::~FST(){
-    for(auto curr_node : nodes_list)
+    for(auto curr_node : frozen_nodes_list_)
         delete curr_node;
 }
 
 int FST::count_nodes(){
-    return this->nodes_list.size();
+    return this->frozen_nodes_list_.size();
 }
 
 int FST::memory_usage(){
-    int total_memory = sizeof(nodes_list);
-    for(Node* node : this->nodes_list)
+    int total_memory = sizeof(frozen_nodes_list_);
+    for(Node* node : this->frozen_nodes_list_)
         total_memory += sizeof(*node);
     return total_memory;
 }
@@ -25,12 +25,12 @@ int FST::memory_usage(){
 ////////////////////////////////////////////////////////////////////////////////////
 
 std::vector<std::string> FST::autocomplete(const std::string& prefix, int max_num_of_results){
-    std::vector<std::string> output_words = std::vector<std::string>();
     Node* last_preffix_node = this->node_with_prefix(prefix);
     // if the prefix is not completely found, return empty vector
     if(last_preffix_node == nullptr)
-        return output_words;
+        return {};
     // Find words
+    std::vector<std::string> output_words = std::vector<std::string>();
     get_all_acceptable_words_from_node(last_preffix_node, prefix, output_words, max_num_of_results);
     return output_words;
 }
@@ -46,7 +46,7 @@ void FST::get_all_acceptable_words_from_node(Node* base_node, const std::string&
 }
 
 Node* FST::node_with_prefix(const std::string& prefix){
-    Node* actual_node = this->root;
+    Node* actual_node = this->root_;
     for(char current_char : prefix){
         auto it = actual_node->next_nodes.find(current_char);
         if(it == actual_node->next_nodes.end())
@@ -58,7 +58,7 @@ Node* FST::node_with_prefix(const std::string& prefix){
 
 std::vector<std::string> FST::levestein(const std::string& word, int dist){
     std::vector<std::string> output_words = std::vector<std::string>();
-    this->levestein_dfs(output_words, this->root, word, "", dist, 0, 0);
+    this->levestein_dfs(output_words, this->root_, word, "", dist, 0, 0);
     return output_words;
 }
 
@@ -107,21 +107,21 @@ void FST::readFST(const std::string& filename){
     std::string line;
     std::ifstream myfile(filename);
 
-    nodes_list.push_back(new Node());
-    this->root = nodes_list[0];
+    frozen_nodes_list_.push_back(new Node());
+    this->root_ = frozen_nodes_list_[0];
     while(std::getline(myfile, line)){
         std::stringstream ss(line);
         int base_node_idx, next_node_idx;
         char transition;
         bool base_node_valid, next_node_valid;
         ss >> base_node_idx >> next_node_idx >> transition >> base_node_valid >> next_node_valid;
-        while(base_node_idx >= (int)nodes_list.size())
-            nodes_list.push_back(new Node());
-        while(next_node_idx >= (int)nodes_list.size())
-            nodes_list.push_back(new Node());
-        nodes_list[base_node_idx]->valid = base_node_valid;
-        nodes_list[next_node_idx]->valid = next_node_valid;
-        nodes_list[base_node_idx]->next_nodes.insert(std::pair<char, Node*>(transition, nodes_list[next_node_idx]));
+        while(base_node_idx >= (int)frozen_nodes_list_.size())
+            frozen_nodes_list_.push_back(new Node());
+        while(next_node_idx >= (int)frozen_nodes_list_.size())
+            frozen_nodes_list_.push_back(new Node());
+        frozen_nodes_list_[base_node_idx]->valid = base_node_valid;
+        frozen_nodes_list_[next_node_idx]->valid = next_node_valid;
+        frozen_nodes_list_[base_node_idx]->next_nodes.insert(std::pair<char, Node*>(transition, frozen_nodes_list_[next_node_idx]));
     }
 }
 
@@ -135,8 +135,8 @@ void FST::buildFST(const std::string& filename){
         this->ingest_last_suffix(last_common_node);
         this->add_suffix(last_common_node, word, existent_prefix_size);
     }
-    this->ingest_last_suffix(this->root);
-    this->nodes_list.push_back(this->root);
+    this->ingest_last_suffix(this->root_);
+    frozen_nodes_list_.push_back(this->root_);
 }
 
 Node* FST::get_last_next_node(Node* node){
@@ -155,7 +155,7 @@ void FST::add_node(Node* base_node, char transition){
 }
 
 Node* FST::new_word_max_existent_prefix(const std::string& new_word, int& existent_prefix_size){
-    Node* actual_node = this->root;
+    Node* actual_node = this->root_;
     existent_prefix_size = 0;
     for(char current_char : new_word){
         if(actual_node->next_nodes.empty() || get_last_next_char(actual_node) != current_char)
@@ -190,7 +190,7 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
         return true;
     bool equal = ingest_last_suffix_recursion(next_node);
     if(equal){
-        for(Node* node : this->nodes_list){
+        for(Node* node : this->frozen_nodes_list_){
             if(node->equals(next_node)){
                 actual_node->next_nodes[get_last_next_char(actual_node)] = node;
                 delete next_node;
@@ -198,7 +198,7 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
             }
         }
     }
-    this->nodes_list.push_back(next_node);
+    this->frozen_nodes_list_.push_back(next_node);
     return false;
 }
 
@@ -207,5 +207,5 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
 ////////////////////////////////////////////////////////////////////////////////////
 
 void FST::write_to_file(const std::string& filename){
-    write_graph_to_file(this->root, filename);
+    write_graph_to_file(this->root_, filename);
 }
