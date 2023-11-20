@@ -1,5 +1,7 @@
-#ifndef TEXTADDER_H
-#define TEXTADDER_H
+#ifndef GUI_H
+#define GUI_H
+
+#include <iostream>
 
 #include <QMainWindow>
 #include <QWidget>
@@ -8,9 +10,7 @@
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QIntValidator>
-#include <unordered_map>
 
-#include <iostream>
 #include "fst.h"
 #include "levesteinDFA.h"
 
@@ -60,4 +60,4 @@ private:
     void create_widgets();
 };
 
-#endif // TEXTADDER_H
+#endif // GUI_H
