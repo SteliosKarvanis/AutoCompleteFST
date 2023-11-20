@@ -5,7 +5,8 @@ FST::FST(){
 }
 
 FST::~FST(){
-    delete_node_tree(this->root);
+    for(auto curr_node : nodes_list)
+        delete curr_node;
 }
 
 int FST::count_nodes(){
@@ -199,37 +200,6 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
     }
     this->nodes_list.push_back(next_node);
     return false;
-}
-
-bool FST::compare_nodes(Node* actual_node, Node* new_node){
-    if((actual_node->valid != new_node->valid))
-        return false;
-    if(new_node->next_nodes != actual_node->next_nodes)
-        return false;
-    return true;
-}
-
-void FST::delete_node_tree(Node* node){
-    std::set<Node*> nodes_to_delete;
-    get_nodes_tree_list_from_node(node, nodes_to_delete);
-    for(auto curr_node : nodes_to_delete)
-        delete curr_node;
-}
-
-/// @brief Check if the file contains sorted words
-/// @return if the file is sorted
-bool FST::check_data(const std::string& filename){
-    std::ifstream myfile;
-    myfile.open(filename);
-
-    std::string word;
-    std::string previous_word = "";
-    while(std::getline(myfile, word)){
-        if(!is_sorted(previous_word, word))
-            return false;
-        previous_word = word;
-    }
-    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -21,13 +21,13 @@ AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWi
     this->input_field = nullptr;
     this->mode_box = nullptr;
     this->levenstein_distance_label = nullptr;
+    this->levenstein_key_label = nullptr;
 
     this->fst = new FST();
+    this->fst->readFST(data_file);
+    this->levesteinDFA = new LevesteinDFA();
     this->current_mode = MODE::AUTOCOMPLETE;
 
-    this->levesteinDFA = new LevesteinDFA();
-
-    this->fst->readFST(data_file);
     this->create_widgets();
     this->create_layout();
     this->create_actions();
@@ -85,8 +85,8 @@ std::vector<std::string> AutoCompleteUI::result_factory(const std::string& word)
     else{
         bool valid = this->levesteinDFA->check(word);
         if(valid)
-            return {"true"};
-        return {"false"};
+            return { "true" };
+        return { "false" };
     }
 }
 void AutoCompleteUI::build_dfa(){

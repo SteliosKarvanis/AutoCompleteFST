@@ -1,5 +1,19 @@
 #include "utils.h"
 
+bool check_data(const std::string& filename){
+    std::ifstream myfile;
+    myfile.open(filename);
+
+    std::string word;
+    std::string previous_word = "";
+    while(std::getline(myfile, word)){
+        if(!is_sorted(previous_word, word))
+            return false;
+        previous_word = word;
+    }
+    return true;
+}
+
 std::vector<std::string>read_vector_from_file(const std::string& file){
     std::ifstream myfile(file);
     std::string word;

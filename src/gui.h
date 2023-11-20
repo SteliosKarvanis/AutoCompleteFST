@@ -40,17 +40,19 @@ public slots:
     void change_mode(int mode_idx);
     void change_levenstein_distance();
     void build_dfa();
+
 private:
     FST* fst;
     LevesteinDFA* levesteinDFA;
+    MODE current_mode;
+
     QWidget* central_widget;
-    QLineEdit* input_field;
     QLabel* display_label;
     QComboBox* mode_box;
+    QLineEdit* input_field;
     QLineEdit* levenstein_distance_label;
     QLineEdit* levenstein_key_label;
 
-    MODE current_mode;
     std::vector<std::string> result_factory(const std::string& word);
 
     void create_actions();
