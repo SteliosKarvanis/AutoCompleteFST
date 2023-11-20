@@ -191,7 +191,7 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
     bool equal = ingest_last_suffix_recursion(next_node);
     if(equal){
         for(Node* node : this->nodes_list){
-            if(compare_nodes(node, next_node)){
+            if(node->equals(next_node)){
                 actual_node->next_nodes[get_last_next_char(actual_node)] = node;
                 delete next_node;
                 return true;

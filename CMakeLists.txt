@@ -12,7 +12,7 @@ set(CMAKE_AUTOUIC ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 file(GLOB_RECURSE SRCS src/*.cpp src/*.h)
-set (SRCS_NO_GUI src/fst.cpp src/fst.cpp src/data_types.cpp src/utils.cpp src/utils.cpp src/levesteinDFA.cpp)
+set (SRCS_NO_GUI src/fst.cpp src/fst.cpp src/data_types.h src/utils.cpp src/utils.cpp src/levesteinDFA.cpp)
 
 # Create executables
 add_executable(app applications/app.cpp ${SRCS})
