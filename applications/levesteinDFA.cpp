@@ -1,21 +1,16 @@
 #include <iostream>
 #include "../src/levesteinDFA.h"
 
-int main(){
+int main(int argc, char* argv[]){
     auto dfa = new LevesteinDFA();
-    dfa->build("woof", 1);
-    dfa->write_to_file("../dfa.txt");
-    std::vector<std::string> tests;
-    tests.push_back("");
-    tests.push_back("w");
-    tests.push_back("ww");
-    tests.push_back("woo");
-    tests.push_back("woof");
-    tests.push_back("wooo");
-    tests.push_back("wooof");
-    tests.push_back("wwf");
-    for(auto text : tests){
-        std::cout << text << " " << dfa->check(text) << std::endl; 
+    if(argc == 3){
+        std::string text = argv[1];
+        int dist = std::stoi(argv[2]);
+        dfa->build(text, dist);
+        dfa->write_to_file("../dfa.txt");
+        std::cout << "Writed dfa to dfa.txt" << std::endl;
     }
+    else
+        std::cout << "Usage: ./levestein <prefix> <dist>\n";
     return 0;
 }
