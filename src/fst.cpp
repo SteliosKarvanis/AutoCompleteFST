@@ -4,19 +4,17 @@ FST::FST(){
     this->root_ = new Node();
 }
 
-FST::~FST(){
-    for(auto curr_node : frozen_nodes_list_)
-        delete curr_node;
-}
 
 int FST::count_nodes(){
-    return this->frozen_nodes_list_.size();
+    return this->frozen_nodes_not_valid.size() + frozen_nodes_valid.size();
 }
 
 int FST::memory_usage(){
-    int total_memory = sizeof(frozen_nodes_list_);
-    for(Node* node : this->frozen_nodes_list_)
-        total_memory += sizeof(*node);
+    int total_memory = sizeof(frozen_nodes_not_valid) + sizeof(frozen_nodes_valid);
+    for(auto it =frozen_nodes_not_valid.begin(); it != frozen_nodes_not_valid.end(); it++)
+        total_memory += sizeof(*it);
+    for(auto it =frozen_nodes_valid.begin(); it != frozen_nodes_valid.end(); it++)
+        total_memory += sizeof(*it);
     return total_memory;
 }
 
@@ -103,27 +101,6 @@ void FST::levestein_dfs(std::vector<std::string>& output_words, Node* actual_nod
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-void FST::readFST(const std::string& filename){
-    std::string line;
-    std::ifstream myfile(filename);
-
-    frozen_nodes_list_.push_back(new Node());
-    this->root_ = frozen_nodes_list_[0];
-    while(std::getline(myfile, line)){
-        std::stringstream ss(line);
-        int base_node_idx, next_node_idx;
-        char transition;
-        bool base_node_valid, next_node_valid;
-        ss >> base_node_idx >> next_node_idx >> transition >> base_node_valid >> next_node_valid;
-        while(base_node_idx >= (int)frozen_nodes_list_.size())
-            frozen_nodes_list_.push_back(new Node());
-        while(next_node_idx >= (int)frozen_nodes_list_.size())
-            frozen_nodes_list_.push_back(new Node());
-        frozen_nodes_list_[base_node_idx]->valid = base_node_valid;
-        frozen_nodes_list_[next_node_idx]->valid = next_node_valid;
-        frozen_nodes_list_[base_node_idx]->next_nodes.insert(std::pair<char, Node*>(transition, frozen_nodes_list_[next_node_idx]));
-    }
-}
 
 void FST::buildFST(const std::string& filename){
     std::string word;
@@ -136,7 +113,10 @@ void FST::buildFST(const std::string& filename){
         this->add_suffix(last_common_node, word, existent_prefix_size);
     }
     this->ingest_last_suffix(this->root_);
-    frozen_nodes_list_.push_back(this->root_);
+    if(root_->valid)
+        frozen_nodes_valid[root_->next_nodes] = root_;
+    else
+        frozen_nodes_not_valid[root_->next_nodes] = root_;
 }
 
 Node* FST::get_last_next_node(Node* node){
@@ -190,15 +170,27 @@ bool FST::ingest_last_suffix_recursion(Node* actual_node){
         return true;
     bool equal = ingest_last_suffix_recursion(next_node);
     if(equal){
-        for(Node* node : this->frozen_nodes_list_){
-            if(node->equals(next_node)){
-                actual_node->next_nodes[get_last_next_char(actual_node)] = node;
+        if(next_node->valid){
+            auto it = frozen_nodes_valid.find(next_node->next_nodes);
+            if(it != frozen_nodes_valid.end()){
+                actual_node->next_nodes[get_last_next_char(actual_node)] = it->second;
+                delete next_node;
+                return true;
+            }
+        }
+        else{
+            auto it = frozen_nodes_not_valid.find(next_node->next_nodes);
+            if(it != frozen_nodes_not_valid.end()){
+                actual_node->next_nodes[get_last_next_char(actual_node)] = it->second;
                 delete next_node;
                 return true;
             }
         }
     }
-    this->frozen_nodes_list_.push_back(next_node);
+    if(next_node->valid)
+        this->frozen_nodes_valid[next_node->next_nodes] = next_node;
+    else
+        this->frozen_nodes_not_valid[next_node->next_nodes] = next_node;
     return false;
 }
 

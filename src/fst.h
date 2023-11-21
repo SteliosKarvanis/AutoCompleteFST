@@ -12,9 +12,8 @@
 class FST{
 public:
     FST();
-    ~FST();
+    ~FST() = default;
     void buildFST(const std::string& filename);
-    void readFST(const std::string& filename);
     std::vector<std::string> levestein(const std::string& word, int dist);
     std::vector<std::string> autocomplete(const std::string& prefix, int max_num_of_results = 20);
     void write_to_file(const std::string& filename);
@@ -23,7 +22,8 @@ public:
 
 protected:
     Node* root_;
-    std::vector<Node*> frozen_nodes_list_;
+    std::map<std::map<char, Node*>, Node*> frozen_nodes_valid;
+    std::map<std::map<char, Node*>, Node*> frozen_nodes_not_valid;
     // Build utils
     void add_suffix(Node* base_node, const std::string& word, int common_prefix_size);
     void add_node(Node* base_node, char transition);

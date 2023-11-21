@@ -24,7 +24,7 @@ AutoCompleteUI::AutoCompleteUI(QWidget* parent, std::string data_file) : QMainWi
     this->levenstein_key_label = nullptr;
 
     this->fst = new FST();
-    this->fst->readFST(data_file);
+    this->fst->buildFST(data_file);
     this->levesteinDFA = new LevesteinDFA();
     this->current_mode = MODE::AUTOCOMPLETE;
 
